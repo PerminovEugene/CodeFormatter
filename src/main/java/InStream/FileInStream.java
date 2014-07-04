@@ -1,6 +1,7 @@
 package InStream;
 
 import Exceptions.StreamException;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 
@@ -21,14 +22,16 @@ public class FileInStream implements InStream {
         fileSource = new File(fileName);
         if (!fileSource.exists())
         {
-            throw new StreamException("file not exist");
+            Logger.getLogger("Stream exception file not exist in FileInSteam");
+            throw new StreamException("File not exist");
         }
         try {
             fileInputStream = new java.io.FileInputStream(fileSource);
         }
-        catch (FileNotFoundException e)
+        catch (FileNotFoundException fileNotFoundException)
         {
-            throw new StreamException("file not found");
+            Logger.getLogger("Stream exception in create FileInStream. ");
+            throw new StreamException("File not found");
         }
     }
 
@@ -43,46 +46,16 @@ public class FileInStream implements InStream {
         try {
             data = fileInputStream.read();
         }
-        catch (IOException e)
+        catch (IOException exception)
         {
-            throw new StreamException("read symbol error");
+            Logger.getLogger("Stream exception at read in FileOutStream. ");
+            throw new StreamException("Read symbol error");
         }
         return data;
     }
 
     /**
-     * test for take info about file
-     */
-    public void testingFileSource()
-    {
-        if (!fileSource.exists())
-        {
-            System.out.println("file not exist");
-        }
-        else {
-            try {
-                System.out.println(fileSource.getCanonicalPath());
-                System.out.println(" full file name;");
-                System.out.println(fileSource.getName());
-                System.out.println(" name of file;");
-            }
-            catch (IOException e)
-            {
-
-            }
-            if (fileSource.canRead())
-            {
-                System.out.println("file not for read;");
-            }
-            if (fileSource.canWrite())
-            {
-                System.out.println("file not for write");
-            }
-        }
-    }
-
-    /**
-     * Close stream
+     * Close stream.
      * @throws StreamException if file was stream was closed early or isn't exist
      */
     public void close() throws StreamException
@@ -92,12 +65,13 @@ public class FileInStream implements InStream {
         }
         catch (IOException e)
         {
-            throw new StreamException("close stream error");
+            Logger.getLogger("Stream exception in close FileInStream. ");
+            throw new StreamException("Close stream error.");
         }
     }
 
     /**
-     *
+     * For knowledge about end of stream.
      * @return true if fileInputStream isn't finished
      * @throws StreamException if fileInputStream isn't exist
      */
@@ -106,9 +80,10 @@ public class FileInStream implements InStream {
         try {
             return (fileInputStream.available() <= 0);
         }
-        catch (IOException s)
+        catch (IOException exception)
             {
-                throw new StreamException("end of file error");
+                Logger.getLogger("Stream exception at isEnd in FileInStream. ");
+                throw new StreamException("End of file error");
             }
     }
 }

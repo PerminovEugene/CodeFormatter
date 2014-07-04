@@ -2,6 +2,7 @@ import Exceptions.FormatterException;
 import Exceptions.StreamException;
 import InStream.InStream;
 import OutStream.OutStream;
+import org.apache.log4j.Logger;
 import sun.awt.Symbol;
 
 /**
@@ -70,12 +71,14 @@ public class CodeFormatter {
         try {
             if (source.isEnd()) throw new FormatterException("source stream was empty");
         }
-        catch (StreamException e)
+        catch (StreamException streamException)
         {
-            throw new FormatterException(e.problem);
+            Logger.getLogger("stream exception in Main, " + streamException.problem + ". ");
+            throw new FormatterException(streamException.problem);
         }
         catch (NullPointerException nullPointException)
         {
+            Logger.getLogger("Formatter exception in CodeFormatter null pointer. ");
             throw new FormatterException("nullPointerException");
         }
         spaceCounter = 4;
@@ -189,20 +192,17 @@ public class CodeFormatter {
         }
         catch (StreamException streamException)
         {
-            System.out.println("Stream exception:"); //logging there fix me
-            System.out.println(streamException.problem);
+            Logger.getLogger("stream exception in Formatter, " + streamException.problem + ". ");
             throw new FormatterException( "stream exception: " + streamException.problem);
         }
         catch (FormatterException formatterException)
         {
-            System.out.println("formatter exception:"); //logging there fix me
-            System.out.println(formatterException.problem);
+            Logger.getLogger("stream exception in Formatter, " + formatterException.problem + ". ");
             throw new FormatterException( "formatter exception: " + formatterException.problem);
         }
         catch (NullPointerException nullPointerException)
         {
-            System.out.println("stream exception:"); //logging there fix me
-            System.out.println("nullPointerException");
+            Logger.getLogger("null pointer exception in Formatter");
             throw new FormatterException("nullPointerException");
         }
     }
@@ -217,9 +217,9 @@ public class CodeFormatter {
                 destination.writeSymbol(symbol);
             }
         }
-        catch (StreamException e)
+        catch (StreamException streamException)
         {
-            System.out.println("Stream exception");
+            Logger.getLogger("stream exception in Formatter when go into new string. " + streamException.problem + ". ");
             throw new FormatterException("stream exception write at new string");
         }
 

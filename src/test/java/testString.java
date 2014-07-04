@@ -4,7 +4,7 @@ import InStream.StringInStream;
 import OutStream.StringOutStream;
 import junit.framework.TestCase;
 import org.junit.Test;
-
+//import org.apache.log4j.Logger;
 /**
  * Created by eugenep on 04.07.14.
  */

@@ -1,6 +1,8 @@
 package OutStream;
 
 import Exceptions.StreamException;
+import org.apache.log4j.Logger;
+
 import java.io.*;
 
 /**
@@ -19,12 +21,15 @@ public class FileOutStream implements OutStream {
     public FileOutStream(String nameOfFile)throws StreamException
     {
         fileDestination = new File(nameOfFile);
-        try {
+        try
+        {
             fileDestination .createNewFile();
             fileOutputStream = new FileOutputStream(fileDestination );
         }
-        catch (IOException e) {
-           throw new StreamException("file is not find");
+        catch (IOException e)
+        {
+            Logger.getLogger("Stream exception in create FileOutStream. ");
+            throw new StreamException("File is not found. ");
         }
     }
 
@@ -40,7 +45,8 @@ public class FileOutStream implements OutStream {
        }
        catch (IOException e)
         {
-            throw new StreamException("write symbol error");
+            Logger.getLogger("Stream exception at write symbol in FileOutStream. ");
+            throw new StreamException("Write symbol error. ");
         }
     }
 
@@ -55,7 +61,8 @@ public class FileOutStream implements OutStream {
         }
         catch (IOException e)
         {
-            throw new StreamException("close stream error");
+            Logger.getLogger("Stream exception in close FileOutStream. ");
+            throw new StreamException("Close stream error");
         }
     }
 }

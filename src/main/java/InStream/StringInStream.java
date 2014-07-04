@@ -1,6 +1,7 @@
 package InStream;
 
 import Exceptions.StreamException;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -29,7 +30,8 @@ public class StringInStream implements InStream {
     {
         if (numberCurrentChar == source.length())
         {
-            throw new StreamException("cant read in out of range");
+            Logger.getLogger("Stream exception at read in FileInStream. ");
+            throw new StreamException("Cant read in out of range. ");
         }
         int symbol = source.charAt(numberCurrentChar);
         numberCurrentChar++;
@@ -37,7 +39,7 @@ public class StringInStream implements InStream {
     }
 
     /**
-     * For take info about end of string
+     * For take info about end of string.
      * @return true if now end of string, else return false
      */
     public boolean isEnd()
@@ -46,7 +48,7 @@ public class StringInStream implements InStream {
     }
 
     /**
-     *
+     * Closed stream.
      */
     public void close()
     {

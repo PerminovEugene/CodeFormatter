@@ -2,6 +2,7 @@ import Exceptions.FormatterException;
 import Exceptions.StreamException;
 import InStream.InStream;
 import OutStream.OutStream;
+import sun.awt.Symbol;
 
 /**
  * Created by eugenep on 01.07.14.
@@ -27,78 +28,159 @@ public class CodeFormatter {
     }
 
     /**
-     * Formatted source stream. Removed extra spaces. Did one
+     * Formatted source stream. Removed extra spaces. Did only one space after ,
      * @param source stream with source symbols
      * @param destination stream for result
      *
      */
-    public void format(InStream source,OutStream destination)
+    private StringBuilder buffer;
+    private void writeInBuffer(int symbol)
     {
-        if (source == null)
+        buffer.append((char)symbol);
+    }
+
+    /**
+     * Siphon from buffer at destination. After that buffer been empty.
+     * @param destination stream which we write buffer
+     */
+    private void throwFromBufferInOutStream(OutStream destination)throws FormatterException
+    {
+        for (int i = 0; i < buffer.length(); i++)
         {
-            System.out.println("InStream is null");
-            return;
+            int symbol = (int)buffer.charAt(i);
+            try {
+                destination.writeSymbol((int) symbol);
+            }
+            catch(StreamException streamException)
+            {
+                throw new FormatterException("write to streamOut from buffer error");
+            }
         }
-        if (destination == null)
+
+    }
+
+    /**
+     * Format
+     * @param source InStream for format
+     * @param destination OutStream for format
+     * @throws FormatterException all errors saved in FormatException.problem.
+     */
+    public void format(InStream source,OutStream destination) throws FormatterException {
+
+        try {
+            if (source.isEnd()) throw new FormatterException("source stream was empty");
+        }
+        catch (StreamException e)
         {
-            System.out.println("OutStream is null");
-            return;
+            throw new FormatterException(e.problem);
+        }
+        catch (NullPointerException nullPointException)
+        {
+            throw new FormatterException("nullPointerException");
         }
         spaceCounter = 4;
-        int symbol;
+        buffer = new StringBuilder();
+        int pastSymbol;
+        int symbol=0;
         boolean isNewString = false;
-        boolean isAloneSpaceButton = false;
-        boolean isAlonePoint = false;
         try{
             while (!source.isEnd()) {
+                pastSymbol = symbol;
                 symbol = source.readSymbol();
                 switch (symbol) {
                     case '{': {
-                        destination.writeSymbol(symbol);
+                        goNextString(destination);
                         isNewString = true;
+                        destination.writeSymbol(symbol);
                         increaseNesting();
                         goNextString(destination);
                         break;
-
                     }
                     case '}': {
-                        destination.writeSymbol(symbol);
-                        isNewString = true;
                         reduceNesting();
+                        isNewString = true;
+                        goNextString(destination);
+                        destination.writeSymbol(symbol);
                         goNextString(destination);
                         break;
                     }
                     case ';': {
-                        destination.writeSymbol(symbol);
                         isNewString = true;
+                        destination.writeSymbol(symbol);
                         goNextString(destination);
                         break;
                     }
                     case ' ': {
                         if (!isNewString) {
-                            if (isAloneSpaceButton) {
-                                isAloneSpaceButton = false;
+                            if (pastSymbol != ' ') {
                                 destination.writeSymbol(symbol);
                             }
                         }
                         break;
                     }
-                    case ',': {
-                        if (!isNewString) {
-                            if (isAlonePoint) {
-                                isAlonePoint = false;
-                                destination.writeSymbol(symbol);
 
-                            }
-                        }
+                    case ',': {
+                            destination.writeSymbol(symbol);
+                            destination.writeSymbol(' ');
+                            pastSymbol = symbol;
+                            symbol = ' ';
                         break;
                     }
+
+                    case '*':
+                    case '/':
+                    case '-':
+                    case '+':
+                    case '=':
+                    {
+                        if ((pastSymbol != ' ') && (pastSymbol!= '=') && (pastSymbol!= '-') && (pastSymbol!= '+') &&
+                                (pastSymbol!= '*') && (pastSymbol!= '/'))
+                        {
+                            destination.writeSymbol((int)' ');
+                        }
+                        destination.writeSymbol(symbol);
+                        //destination.writeSymbol((int)' ');
+                        pastSymbol = symbol;
+                        //symbol = ' ';
+                        break;
+                    }
+
                     case '\n': {
                         break;
                     }
+
+                    /*case '/':
+                    {
+                        if (pastSymbol == '/')
+                        {
+                            while (source.isEnd() != false || symbol != '\n') {
+                                symbol = source.readSymbol();
+                                destination.writeSymbol((int)' ');
+                                pastSymbol = symbol;
+                            }
+                        }
+                        else
+                        {
+                            if ((pastSymbol != ' ') && (pastSymbol!= '=') && (pastSymbol!= '-') && (pastSymbol!= '+') &&
+                                    (pastSymbol!= '*') && (pastSymbol!= '/'))
+                            {
+                                destination.writeSymbol((int)' ');
+                            }
+                            destination.writeSymbol(symbol);
+                            //destination.writeSymbol((int)' ');
+                            pastSymbol = symbol;
+                            //symbol = ' ';
+                            break;
+                        }
+                    }*/
                     default: {
                         isNewString = false;
-                        isAloneSpaceButton = true;
+                        if ((pastSymbol == ' ') || (pastSymbol== '=') || (pastSymbol== '-') || (pastSymbol== '+') ||
+                                (pastSymbol== '*') || (pastSymbol== '/'))
+                        {
+                            destination.writeSymbol(' ');
+                            pastSymbol = ' ';
+                        }
                         destination.writeSymbol(symbol);
                         break;
                     }
@@ -107,19 +189,26 @@ public class CodeFormatter {
         }
         catch (StreamException streamException)
         {
-            System.out.println("Stream exception:");
+            System.out.println("Stream exception:"); //logging there fix me
             System.out.println(streamException.problem);
+            throw new FormatterException( "stream exception: " + streamException.problem);
         }
         catch (FormatterException formatterException)
         {
-            System.out.println("formatter exception:");
+            System.out.println("formatter exception:"); //logging there fix me
             System.out.println(formatterException.problem);
+            throw new FormatterException( "formatter exception: " + formatterException.problem);
         }
-
+        catch (NullPointerException nullPointerException)
+        {
+            System.out.println("stream exception:"); //logging there fix me
+            System.out.println("nullPointerException");
+            throw new FormatterException("nullPointerException");
+        }
     }
-    private void goNextString(OutStream destination)
+
+    private void goNextString(OutStream destination)throws FormatterException
     {
-        //go to next string
         int symbol = '\n';
         try {
             destination.writeSymbol(symbol);
@@ -131,6 +220,7 @@ public class CodeFormatter {
         catch (StreamException e)
         {
             System.out.println("Stream exception");
+            throw new FormatterException("stream exception write at new string");
         }
 
     }

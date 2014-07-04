@@ -9,7 +9,6 @@ public class FormatterException extends Exception {
      * info about trouble
      */
     public String problem;
-
     /**
      * saved parameter in private var "problem"
      * @param message info about exception

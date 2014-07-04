@@ -1,30 +1,36 @@
+import Exceptions.FormatterException;
 import junit.framework.TestCase;
 import org.junit.Test;
-import InStream.FileInStream;
+import InStream.StringInStream;
 import InStream.InStream;
 import OutStream.OutStream;
+import OutStream.StringOutStream;
 
 /**
  * Created by eugenep on 04.07.14.
  */
 public class testNullOutStream extends TestCase{
-        private OutStream destination;
-        private InStream source;
+    private OutStream destination;
+    private InStream source;
 
-        protected void setUp()throws Exception
-        {
-            destination = null;
-            source = new FileInStream("FileWorkerSource.java");
-        }
-        @Test
-        public void testEmpty()throws Exception
-        {
+    protected void setUp()throws Exception
+    {
+        destination =  null;
+        source = new StringInStream("dfs{}dfs");
+    }
+
+    @Test
+    public void testString()throws FormatterException
+    {
+        try {
             CodeFormatter codeFormatter = new CodeFormatter();
-            codeFormatter.format(source,destination);
-            assertEquals(null,destination);
+            codeFormatter.format(source, destination);
+            fail("must be exception");
         }
-        protected void tearDown() throws Exception {
-            source.close();
-            destination.close();
+        catch (FormatterException exception)
+        {
+            // good
         }
+
+    }
 }

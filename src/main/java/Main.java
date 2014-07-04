@@ -1,5 +1,6 @@
 //import org.apache.log4j.Logger;
 
+import Exceptions.FormatterException;
 import Exceptions.StreamException;
 import InStream.InStream;
 import InStream.FileInStream;
@@ -36,6 +37,10 @@ public class Main {
         catch (StreamException streamException)
         {
             System.out.print(streamException.problem);
+        }
+        catch (FormatterException formatterException)
+        {
+            //logg
         }
     }
 

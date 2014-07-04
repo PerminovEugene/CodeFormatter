@@ -1,3 +1,4 @@
+import Exceptions.FormatterException;
 import InStream.InStream;
 import OutStream.OutStream;
 import OutStream.StringOutStream;
@@ -15,7 +16,7 @@ public class testEmptyString extends TestCase {
 
     protected void setUp()throws Exception
     {
-        destination =  new StringOutStream("v");
+        destination =  new StringOutStream("vfsvsfv");
         source = new StringInStream("");
     }
 
@@ -23,8 +24,14 @@ public class testEmptyString extends TestCase {
     public void testString()throws Exception
     {
         CodeFormatter codeFormatter = new CodeFormatter();
-        codeFormatter.format(source,destination);
-        assertEquals("", destination);
+        try {
+            codeFormatter.format(source, destination);
+            fail("must be exception");
+        }
+        catch (FormatterException formatterException)
+        {
+            //good
+        }
     }
     protected void tearDown() throws Exception {
         source.close();

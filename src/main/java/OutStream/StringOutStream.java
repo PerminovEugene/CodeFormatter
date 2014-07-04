@@ -6,7 +6,7 @@ import OutStream.OutStream;
  * Created by eugenep on 02.07.14.
  */
 public class StringOutStream implements OutStream {
-    private StringBuilder destination;
+    public StringBuilder destination;
     private int numberCurrentChar;
 
     /**
@@ -30,6 +30,4 @@ public class StringOutStream implements OutStream {
     {
         destination = null;
     }
-
-
 }

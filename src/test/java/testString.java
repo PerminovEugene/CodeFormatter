@@ -14,15 +14,16 @@ public class testString extends TestCase{
 
     protected void setUp()throws Exception
     {
-        destination = new StringOutStream("{{s}{}}");
-        source = new StringInStream("FileWorkerSource.java");
+        destination = new StringOutStream("q");
+        source = new StringInStream("{{s}}");
     }
     @Test
     public void testEmpty()throws Exception
     {
         CodeFormatter codeFormatter = new CodeFormatter();
         codeFormatter.format(source,destination);
-        assertEquals("{/n",destination);
+        OutStream goodDestinationResult = new StringOutStream("{/n    {/n        s/n        }/n    }");
+        assertEquals(goodDestinationResult,destination);
     }
     protected void tearDown() throws Exception {
         source.close();

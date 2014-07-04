@@ -1,0 +1,18 @@
+# Java files #
+*.class
+*.jar
+*.war
+*.ear
+CodeFormatter.iml
+CodeChanger.iml
+
+# IDE files #
+.idea/
+*.iml
+*.sublime-*
+
+# Other files and folders #
+target/
+out/
+bin/
+logs/

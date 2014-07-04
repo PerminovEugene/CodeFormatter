@@ -7,7 +7,7 @@ import OutStream.OutStream;
 /**
  * Created by eugenep on 04.07.14.
  */
-public class testNull extends TestCase{
+public class testNullOutStream extends TestCase{
         private OutStream destination;
         private InStream source;
 

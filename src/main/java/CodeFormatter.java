@@ -31,6 +31,7 @@ public class CodeFormatter {
 
     private boolean isNewString1 = false;
     private int pastSymbol1 = 0;
+    private boolean pastIsOperand = false;
     private void writeIndent(OutStream destination) throws FormatterException
     {
         try {
@@ -130,12 +131,12 @@ public class CodeFormatter {
         }
         catch (FormatterException formatterException)
         {
-            logger.error("Formatter exception in format when write '{'. " + formatterException.problem);
+            logger.error("Formatter exception in format when write ';'. " + formatterException.problem);
             throw new FormatterException("stream exception write at new string");
         }
         catch (StreamException streamException)
         {
-            logger.error("Stream exception in out stream when write '{'. ");
+            logger.error("Stream exception in out stream when write ';'. ");
             throw new FormatterException("stream exception in out stream");
         }
     }
@@ -149,7 +150,42 @@ public class CodeFormatter {
         }
         catch (StreamException streamException)
         {
-            logger.error("Stream exception in out stream when write '{'. ");
+            logger.error("Stream exception in out stream when write ' '. ");
+            throw new FormatterException("stream exception in out stream");
+        }
+    }
+    private void processingComa(OutStream destination)throws  FormatterException
+    {
+        try {
+            if (isNewString1)
+            {
+                writeIndent(destination);
+            }
+            if (pastSymbol1 != ' ') {
+                destination.writeSymbol(' ');
+            }
+            destination.writeSymbol('(');
+
+        }
+        catch (StreamException streamException)
+        {
+            logger.error("Stream exception in out stream when write ',. ");
+            throw new FormatterException("stream exception in out stream");
+        }
+    }
+    private  void processingOperand(OutStream destination,int symbol)throws FormatterException
+    {
+        try {
+            if ((pastSymbol1 != ' ') && (pastSymbol1 != '=') && (pastSymbol1 != '-') && (pastSymbol1 != '+') &&
+                    (pastSymbol1 != '*') && (pastSymbol1 != '/') && (pastSymbol1 != '%') && (pastSymbol1 != '!')) {
+                destination.writeSymbol((int) ' ');
+            }
+            destination.writeSymbol(symbol);
+            pastIsOperand = true;
+        }
+        catch (StreamException streamException)
+        {
+            logger.error("Stream exception in out stream when write operand. ");
             throw new FormatterException("stream exception in out stream");
         }
     }
@@ -159,8 +195,15 @@ public class CodeFormatter {
             if (isNewString1)
             {
                 writeIndent(destination);
+                isNewString1 = false;
             }
-            isNewString1 = false;
+            else {
+                if (pastIsOperand == true)
+                {
+                    destination.writeSymbol(' ');
+                    pastIsOperand = false;
+                }
+            }
             destination.writeSymbol(symbol);
         }
         catch (FormatterException formatterException)
@@ -219,6 +262,7 @@ public class CodeFormatter {
         int symbol = 0;
         levelOfNesting = 0;
         isNewString1= false;
+        pastIsOperand = false;
         try {
             while (!source.isEnd()) {
                 pastSymbol1 = symbol;
@@ -246,6 +290,20 @@ public class CodeFormatter {
                     }
                     case '\n':
                     {
+                        break;
+                    }
+                    case ',':
+                    {
+                        processingComa(destination);
+                        break;
+                    }
+                    case '*':
+                    case '/':
+                    case '-':
+                    case '+':
+                    case '=':
+                    {
+                        processingOperand(destination, symbol);
                         break;
                     }
                     default:

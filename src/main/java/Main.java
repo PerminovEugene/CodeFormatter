@@ -28,7 +28,7 @@ public class Main {
         try {
             OutStream destinationSymbols = new FileOutStream(dest);
             InStream sourceSymbols = new FileInStream(source);
-            codeFormatter.format(sourceSymbols, destinationSymbols);
+            codeFormatter.format1(sourceSymbols, destinationSymbols);
         }
         catch (StreamException streamException)
         {

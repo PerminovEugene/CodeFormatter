@@ -28,7 +28,9 @@ public class CodeConfigurator {
             throw new StreamException("properties file not found");
         }
         int symbol = inStream.readSymbol();
-        if (symbol > -1)
+        char spaceCounter = (char) symbol;
+        symbol = Character.getNumericValue(spaceCounter);
+        if (symbol >= -1)
         {
             spaceCount = symbol;
         }

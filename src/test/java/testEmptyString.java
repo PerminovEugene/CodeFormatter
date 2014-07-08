@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * Created by eugenep on 04.07.14.
  */
-public class testEmptyString extends TestCase {
+public class testEmptyString {
 
     private OutStream destination;
     private InStream source;
@@ -20,18 +20,11 @@ public class testEmptyString extends TestCase {
         source = new StringInStream("");
     }
 
-    @Test
+    @Test(expected = FormatterException.class) //// swat
     public void testString()throws Exception
     {
-        CodeFormatter codeFormatter = new CodeFormatter();
-        try {
-            codeFormatter.format(source, destination);
-            fail("must be exception");
-        }
-        catch (FormatterException formatterException)
-        {
-            //good
-        }
+          CodeFormatter codeFormatter = new CodeFormatter();
+          codeFormatter.format(source, destination);
     }
     protected void tearDown() throws Exception {
         source.close();

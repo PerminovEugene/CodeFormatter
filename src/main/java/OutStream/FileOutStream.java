@@ -9,6 +9,7 @@ import java.io.*;
  * Created by eugenep on 02.07.14.
  */
 public class FileOutStream implements OutStream {
+    private static Logger logger = Logger.getLogger(FileOutStream.class);
 
     private FileOutputStream fileOutputStream = null;
     private File fileDestination = null;
@@ -28,7 +29,7 @@ public class FileOutStream implements OutStream {
         }
         catch (IOException e)
         {
-            Logger.getLogger("Stream exception in create FileOutStream. ");
+            logger.error("Stream exception in create FileOutStream. ");
             throw new StreamException("File is not found. ");
         }
     }
@@ -45,7 +46,7 @@ public class FileOutStream implements OutStream {
        }
        catch (IOException e)
         {
-            Logger.getLogger("Stream exception at write symbol in FileOutStream. ");
+            logger.error("Stream exception at write symbol in FileOutStream. ");
             throw new StreamException("Write symbol error. ");
         }
     }
@@ -61,7 +62,7 @@ public class FileOutStream implements OutStream {
         }
         catch (IOException e)
         {
-            Logger.getLogger("Stream exception in close FileOutStream. ");
+            logger.error("Stream exception in close FileOutStream. ");
             throw new StreamException("Close stream error");
         }
     }

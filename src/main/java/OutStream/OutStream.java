@@ -1,6 +1,7 @@
 package OutStream;
 
 import Exceptions.StreamException;
+import org.apache.log4j.Logger;
 
 /**
  * Created by eugenep on 01.07.14.

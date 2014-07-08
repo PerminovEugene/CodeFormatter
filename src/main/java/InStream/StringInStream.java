@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
  * Created by eugenep on 02.07.14.
  */
 public class StringInStream implements InStream {
+    private static Logger logger = Logger.getLogger(StringInStream.class);
+
     private String source;
     private int numberCurrentChar;
 
@@ -30,7 +32,7 @@ public class StringInStream implements InStream {
     {
         if (numberCurrentChar == source.length())
         {
-            Logger.getLogger("Stream exception at read in FileInStream. ");
+            logger.error("Stream exception at read in FileInStream. ");
             throw new StreamException("Cant read in out of range. ");
         }
         int symbol = source.charAt(numberCurrentChar);

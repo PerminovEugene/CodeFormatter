@@ -9,6 +9,8 @@ import java.io.*;
  * Created by eugenep on 01.07.14.
  */
 public class FileInStream implements InStream {
+    private static Logger logger = Logger.getLogger(FileInStream.class);
+
     private java.io.FileInputStream fileInputStream;
     private File fileSource;
 
@@ -22,7 +24,7 @@ public class FileInStream implements InStream {
         fileSource = new File(fileName);
         if (!fileSource.exists())
         {
-            Logger.getLogger("Stream exception file not exist in FileInSteam");
+            logger.error("Stream exception file not exist in FileInSteam");
             throw new StreamException("File not exist");
         }
         try {
@@ -30,7 +32,7 @@ public class FileInStream implements InStream {
         }
         catch (FileNotFoundException fileNotFoundException)
         {
-            Logger.getLogger("Stream exception in create FileInStream. ");
+            logger.error("Stream exception in create FileInStream. ");
             throw new StreamException("File not found");
         }
     }
@@ -48,7 +50,7 @@ public class FileInStream implements InStream {
         }
         catch (IOException exception)
         {
-            Logger.getLogger("Stream exception at read in FileOutStream. ");
+            logger.error("Stream exception at read in FileOutStream. ");
             throw new StreamException("Read symbol error");
         }
         return data;
@@ -65,7 +67,7 @@ public class FileInStream implements InStream {
         }
         catch (IOException e)
         {
-            Logger.getLogger("Stream exception in close FileInStream. ");
+            logger.error("Stream exception in close FileInStream. ");
             throw new StreamException("Close stream error.");
         }
     }
@@ -82,7 +84,7 @@ public class FileInStream implements InStream {
         }
         catch (IOException exception)
             {
-                Logger.getLogger("Stream exception at isEnd in FileInStream. ");
+                logger.error("Stream exception at isEnd in FileInStream. ");
                 throw new StreamException("End of file error");
             }
     }

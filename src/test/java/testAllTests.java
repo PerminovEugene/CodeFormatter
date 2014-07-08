@@ -12,6 +12,7 @@ public class testAllTests extends TestSuite {
         testEmptyString test2 = new testEmptyString();
         testNullInStream test3 = new testNullInStream();
         testNullOutStream test4 = new testNullOutStream();
+        testString test5 = new testString();
     }
 
 

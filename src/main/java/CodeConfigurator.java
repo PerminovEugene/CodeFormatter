@@ -18,9 +18,8 @@ public class CodeConfigurator {
      * else
      * @throws StreamException
      */
-    public void Configurator()throws StreamException, ConfigException
+    public CodeConfigurator()throws StreamException, ConfigException
     {
-        System.out.print("f");
         try {
             inStream = new FileInStream("Formatter_options.java");
         }
@@ -29,7 +28,6 @@ public class CodeConfigurator {
             throw new StreamException("properties file not found");
         }
         int symbol = inStream.readSymbol();
-
         if (symbol > -1)
         {
             spaceCount = symbol;

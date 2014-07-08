@@ -1,6 +1,5 @@
 package OutStream;
-
-import OutStream.OutStream;
+import org.apache.log4j.Logger;
 
 /**
  * Created by eugenep on 02.07.14.

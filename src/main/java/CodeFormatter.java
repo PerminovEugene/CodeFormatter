@@ -1,17 +1,17 @@
+import Exceptions.ConfigException;
 import Exceptions.FormatterException;
 import Exceptions.StreamException;
 import InStream.InStream;
 import OutStream.OutStream;
 import org.apache.log4j.Logger;
-import sun.awt.Symbol;
 
 /**
  * Created by eugenep on 01.07.14.
- * Class for static code refactor.
+ * Class for static code format.
  */
 
-
 public class CodeFormatter {
+    private static Logger logger = Logger.getLogger(CodeFormatter.class);
 
     private int levelOfNesting = 0;
     private int spaceCounter;
@@ -24,85 +24,81 @@ public class CodeFormatter {
         levelOfNesting--;
         if(levelOfNesting < 0)
         {
+            logger.error("Exception in file.java: } more then {. ");
             throw new FormatterException("} mor then {");
         }
     }
 
     /**
-     * Formatted source stream. Removed extra spaces. Did only one space after ,
-     * @param source stream with source symbols
-     * @param destination stream for result
-     *
-     */
-    private StringBuilder buffer;
-    private void writeInBuffer(int symbol)
-    {
-        buffer.append((char)symbol);
-    }
-
-    /**
-     * Siphon from buffer at destination. After that buffer been empty.
-     * @param destination stream which we write buffer
-     */
-    private void throwFromBufferInOutStream(OutStream destination)throws FormatterException
-    {
-        for (int i = 0; i < buffer.length(); i++)
-        {
-            int symbol = (int)buffer.charAt(i);
-            try {
-                destination.writeSymbol((int) symbol);
-            }
-            catch(StreamException streamException)
-            {
-                throw new FormatterException("write to streamOut from buffer error");
-            }
-        }
-
-    }
-
-    /**
-     * Format
+     * Format source stream. Removed extra space, added spaces what's need and format some operators.
      * @param source InStream for format
      * @param destination OutStream for format
      * @throws FormatterException all errors saved in FormatException.problem.
      */
     public void format(InStream source,OutStream destination) throws FormatterException {
-
         try {
-            if (source.isEnd()) throw new FormatterException("source stream was empty");
+            if (source.isEnd()) {
+                logger.error("source stream was empty");
+                throw new FormatterException("source stream was empty");
+            }
         }
         catch (StreamException streamException)
         {
-            Logger.getLogger("stream exception in Main, " + streamException.problem + ". ");
+            logger.error("stream exception in Main, " + streamException.problem + ". ");
             throw new FormatterException(streamException.problem);
         }
         catch (NullPointerException nullPointException)
         {
-            Logger.getLogger("Formatter exception in CodeFormatter null pointer. ");
+            logger.error("Formatter exception in CodeFormatter null pointer. ");
             throw new FormatterException("nullPointerException");
         }
-        spaceCounter = 4;
-        buffer = new StringBuilder();
+        try {
+            CodeConfigurator configurator = new CodeConfigurator();
+            //if (!configurator.usingTabulation())
+           // {
+            spaceCounter = configurator.takeSpaceCount();
+            char spaceCounter1 = (char) spaceCounter;
+            spaceCounter = Character.getNumericValue(spaceCounter1);
+            //}
+        }
+        catch (ConfigException configException) {
+            logger.error("error in CodeConfigurator");
+            throw new FormatterException(configException.problem);
+        }
+        catch (StreamException streamException)
+        {
+            logger.error(" exception in CodeConfigurator null pointer. ");
+            throw new FormatterException(streamException.problem);
+        }
         int pastSymbol;
-        int symbol=0;
+        int symbol = 0;
+        levelOfNesting = 0;
         boolean isNewString = false;
         try{
             while (!source.isEnd()) {
                 pastSymbol = symbol;
                 symbol = source.readSymbol();
                 switch (symbol) {
-                    case '{': {
-                        goNextString(destination);
+                    case '{':
+                    {
+                        if (!isNewString)
+                        {
+                            goNextString(destination);
+                        }
                         isNewString = true;
                         destination.writeSymbol(symbol);
                         increaseNesting();
                         goNextString(destination);
                         break;
                     }
-                    case '}': {
+                    case '}':
+                    {
                         reduceNesting();
+                       // if (!isNewString)
+                        //{
+                            goNextString(destination);
+                       // }
                         isNewString = true;
-                        goNextString(destination);
                         destination.writeSymbol(symbol);
                         goNextString(destination);
                         break;
@@ -113,7 +109,8 @@ public class CodeFormatter {
                         goNextString(destination);
                         break;
                     }
-                    case ' ': {
+                    case ' ':
+                    {
                         if (!isNewString) {
                             if (pastSymbol != ' ') {
                                 destination.writeSymbol(symbol);
@@ -121,15 +118,14 @@ public class CodeFormatter {
                         }
                         break;
                     }
-
-                    case ',': {
-                            destination.writeSymbol(symbol);
-                            destination.writeSymbol(' ');
-                            pastSymbol = symbol;
-                            symbol = ' ';
+                    case ',':
+                    {
+                        destination.writeSymbol(symbol);
+                        destination.writeSymbol(' ');
+                        pastSymbol = symbol;
+                        symbol = ' ';
                         break;
                     }
-
                     case '*':
                     case '/':
                     case '-':
@@ -143,42 +139,17 @@ public class CodeFormatter {
                         }
                         destination.writeSymbol(symbol);
                         //destination.writeSymbol((int)' ');
-                        pastSymbol = symbol;
+                       // pastSymbol = symbol;
                         //symbol = ' ';
                         break;
                     }
-
                     case '\n': {
                         break;
                     }
-
-                    /*case '/':
+                    default:
                     {
-                        if (pastSymbol == '/')
-                        {
-                            while (source.isEnd() != false || symbol != '\n') {
-                                symbol = source.readSymbol();
-                                destination.writeSymbol((int)' ');
-                                pastSymbol = symbol;
-                            }
-                        }
-                        else
-                        {
-                            if ((pastSymbol != ' ') && (pastSymbol!= '=') && (pastSymbol!= '-') && (pastSymbol!= '+') &&
-                                    (pastSymbol!= '*') && (pastSymbol!= '/'))
-                            {
-                                destination.writeSymbol((int)' ');
-                            }
-                            destination.writeSymbol(symbol);
-                            //destination.writeSymbol((int)' ');
-                            pastSymbol = symbol;
-                            //symbol = ' ';
-                            break;
-                        }
-                    }*/
-                    default: {
                         isNewString = false;
-                        if ((pastSymbol == ' ') || (pastSymbol== '=') || (pastSymbol== '-') || (pastSymbol== '+') ||
+                        if ((pastSymbol== '=') || (pastSymbol== '-') || (pastSymbol== '+') ||
                                 (pastSymbol== '*') || (pastSymbol== '/'))
                         {
                             destination.writeSymbol(' ');
@@ -192,17 +163,17 @@ public class CodeFormatter {
         }
         catch (StreamException streamException)
         {
-            Logger.getLogger("stream exception in Formatter, " + streamException.problem + ". ");
+            logger.error("stream exception in Formatter, " + streamException.problem + ". ");
             throw new FormatterException( "stream exception: " + streamException.problem);
         }
         catch (FormatterException formatterException)
         {
-            Logger.getLogger("stream exception in Formatter, " + formatterException.problem + ". ");
+            logger.error("stream exception in Formatter, " + formatterException.problem + ". ");
             throw new FormatterException( "formatter exception: " + formatterException.problem);
         }
         catch (NullPointerException nullPointerException)
         {
-            Logger.getLogger("null pointer exception in Formatter");
+            logger.error("null pointer exception in Formatter");
             throw new FormatterException("nullPointerException");
         }
     }
@@ -210,19 +181,31 @@ public class CodeFormatter {
     private void goNextString(OutStream destination)throws FormatterException
     {
         int symbol = '\n';
+
         try {
             destination.writeSymbol(symbol);
             symbol = ' ';
-            for (int i = 0; i < spaceCounter * levelOfNesting; i++) {
-                destination.writeSymbol(symbol);
+            if (spaceCounter == -1)
+            {
+                symbol = '\t';
+                for (int i = 0; i < levelOfNesting; i++)
+                {
+                    destination.writeSymbol(symbol);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < spaceCounter * levelOfNesting; i++)
+                {
+                    destination.writeSymbol(symbol);
+                }
             }
         }
         catch (StreamException streamException)
         {
-            Logger.getLogger("stream exception in Formatter when go into new string. " + streamException.problem + ". ");
+            logger.error("stream exception in Formatter when go into new string. " + streamException.problem + ". ");
             throw new FormatterException("stream exception write at new string");
         }
-
     }
 
 }

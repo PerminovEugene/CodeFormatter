@@ -1,7 +1,6 @@
 package OutStream;
 
 import Exceptions.StreamException;
-import org.apache.log4j.Logger;
 
 /**
  * Created by eugenep on 01.07.14.
@@ -9,13 +8,14 @@ import org.apache.log4j.Logger;
 public interface OutStream {
 
     /**
-     * Write one symbol in stream
+     * Write one symbol in stream.
      * @param symbol which will write in stream
+     * @throws StreamException if was fail at write in stream.
      */
     void writeSymbol(int symbol) throws StreamException;
 
     /**
-     * closed stream
+     * Closed stream.
      * @throws StreamException if trouble in close stream
      */
     void close()throws StreamException;

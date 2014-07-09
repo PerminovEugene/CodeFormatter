@@ -118,13 +118,14 @@ public class CodeFormatter {
         } catch (FormatterException formatterException) {
             logger.error("Formatter exception in format when write ';'. "
                     + formatterException.problem);
-            throw new FormatterException("stream exception write at new string");
+            throw new FormatterException("stream exception:"
+                    + " write at new string");
         } catch (StreamException streamException) {
             logger.error("Stream exception in out stream when write ';'. ");
             throw new FormatterException("stream exception in out stream");
         }
     }
-    private void processingSpace(OutStream destination)
+    private void processingSpace(final OutStream destination)
             throws  FormatterException {
         try {
             if (!isNewString1 && pastSymbol1 != ' ') {
@@ -140,19 +141,28 @@ public class CodeFormatter {
         try {
             if (isNewString1) {
                 writeIndent(destination);
-            } if (pastSymbol1 != ' ') {
+            }
+            if (pastSymbol1 != ' ') {
                 destination.writeSymbol(' ');
-            } destination.writeSymbol('(');
+            }
+            destination.writeSymbol('(');
         } catch (StreamException streamException) {
             logger.error("Stream exception in out stream when write ',. ");
             throw new FormatterException("stream exception in out stream");
         }
     }
-    private  void processingOperand(final OutStream destination,int symbol)
+    private  void processingOperand(final OutStream destination,
+                                    final int symbol)
             throws FormatterException {
         try {
-            if ((pastSymbol1 != ' ') && (pastSymbol1 != '=') && (pastSymbol1 != '-') && (pastSymbol1 != '+') &&
-                    (pastSymbol1 != '*') && (pastSymbol1 != '/') && (pastSymbol1 != '%') && (pastSymbol1 != '!')) {
+            if ((pastSymbol1 != ' ')
+                    && (pastSymbol1 != '=')
+                    && (pastSymbol1 != '-')
+                    && (pastSymbol1 != '+')
+                    && (pastSymbol1 != '*')
+                    && (pastSymbol1 != '/')
+                    && (pastSymbol1 != '%')
+                    && (pastSymbol1 != '!')) {
                 destination.writeSymbol((int) ' ');
             }
             isNewString1 = false;
@@ -163,34 +173,40 @@ public class CodeFormatter {
             throw new FormatterException("stream exception in out stream");
         }
     }
-    private void processingNotSpecialSymbol(final OutStream destination,int symbol)
+    private void processingNotSpecialSymbol(final OutStream destination,
+                                           final int symbol)
             throws  FormatterException {
         try {
             if (isNewString1) {
                 writeIndent(destination);
                 isNewString1 = false;
             } else {
-                if (pastIsOperand == true) {
+                if (pastIsOperand) {
                     destination.writeSymbol(' ');
                     pastIsOperand = false;
                 }
             }
             destination.writeSymbol(symbol);
         } catch (FormatterException formatterException) {
-            logger.error("Formatter exception in format when write '{'. " + formatterException.problem);
-            throw new FormatterException("stream exception write at new string");
+            logger.error("Formatter exception in format when write '{'. "
+                    + formatterException.problem);
+            throw new FormatterException("stream exception write "
+                    + "at new string");
         } catch (StreamException streamException) {
             logger.error("Stream exception in out stream when write '{'. ");
             throw new FormatterException("stream exception in out stream");
         }
     }
     /**
-     * Format source stream. Removed extra space, added spaces what's need and format some operators.
+     * Format source stream. Removed extra space, added spaces
+     * what's need and format some operators.
      * @param source InStream for format
      * @param destination OutStream for format
-     * @throws FormatterException all errors saved in FormatException.problem.
+     * @throws FormatterException all errors saved
+     * in FormatException.problem.
      */
-        public void format(final InStream source,OutStream destination)
+        public final void format(final InStream source,
+                                 final OutStream destination)
                 throws FormatterException {
             try {
                 CodeConfigurator configurator = new CodeConfigurator();
@@ -205,7 +221,8 @@ public class CodeFormatter {
             }
             formatStart(source, destination);
         }
-        public void formatStart(final InStream source, final OutStream destination)
+        public final void formatStart(final InStream source,
+                                final OutStream destination)
                 throws FormatterException {
         try {
             if (source.isEnd()) {
@@ -213,7 +230,8 @@ public class CodeFormatter {
                 throw new FormatterException("source stream was empty");
             }
         } catch (StreamException streamException) {
-            logger.error("stream exception in Main, " + streamException.problem + ". ");
+            logger.error("stream exception in Main, "
+                    + streamException.problem + ". ");
             throw new FormatterException(streamException.problem);
         } catch (NullPointerException nullPointException) {
             logger.error("Formatter exception in CodeFormatter null pointer. ");
@@ -258,12 +276,14 @@ public class CodeFormatter {
                 }
             }
         } catch (StreamException streamException) {
-            logger.error("stream exception in Formatter, " + streamException.problem + ". ");
-            throw new FormatterException( "stream exception: "
+            logger.error("stream exception in Formatter, "
+                    + streamException.problem + ". ");
+            throw new FormatterException("stream exception: "
                     + streamException.problem);
         } catch (FormatterException formatterException) {
-            logger.error("stream exception in Formatter, " + formatterException.problem + ". ");
-            throw new FormatterException( "formatter exception: "
+            logger.error("stream exception in Formatter, "
+                    + formatterException.problem + ". ");
+            throw new FormatterException("formatter exception: "
                     + formatterException.problem);
         } catch (NullPointerException nullPointerException) {
              logger.error("null pointer exception in Formatter");

@@ -14,24 +14,21 @@ public class StringInStream implements InStream {
     private int numberCurrentChar;
 
     /**
-     * Create input stream
-     * @param string
+     *  Create input stream.
+     * @param string for create stream.
      */
-    public StringInStream(String string)
-    {
+    public StringInStream(final String string) {
         source = string;
         numberCurrentChar = 0;
     }
 
     /**
-     * Read one symbol from stream
-     * @return symbol which read
-     * @throws StreamException if read from end of string
+     *  Read one symbol from stream.
+     * @return symbol which read.
+     * @throws StreamException if read from end of string.
      */
-    public int readSymbol() throws StreamException
-    {
-        if (numberCurrentChar == source.length())
-        {
+    public final int readSymbol() throws StreamException {
+        if (numberCurrentChar == source.length()) {
             logger.error("Stream exception at read in FileInStream. ");
             throw new StreamException("Cant read in out of range. ");
         }
@@ -44,16 +41,14 @@ public class StringInStream implements InStream {
      * For take info about end of string.
      * @return true if now end of string, else return false
      */
-    public boolean isEnd()
-    {
+    public final boolean isEnd() {
         return (numberCurrentChar == source.length());
     }
 
     /**
      * Closed stream.
      */
-    public void close()
-    {
+    public final void close() {
         source = null;
     }
 }

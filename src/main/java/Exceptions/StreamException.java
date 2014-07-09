@@ -6,7 +6,7 @@ package  Exceptions;
 public class StreamException extends Exception {
 
     /**
-     * info about trouble
+     *  Info about trouble.
      */
     public String problem;
 
@@ -14,8 +14,7 @@ public class StreamException extends Exception {
      * saved parameter in private var "problem"
      * @param whatsHappened info about exception
      */
-    public StreamException(String whatsHappened)
-    {
+    public StreamException(final String whatsHappened) {
         problem = whatsHappened;
     }
 

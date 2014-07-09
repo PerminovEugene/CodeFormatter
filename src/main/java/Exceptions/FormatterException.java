@@ -6,15 +6,14 @@ package  Exceptions;
 public class FormatterException extends Exception {
 
     /**
-     * info about trouble
+     *  Info about trouble.
      */
     public String problem;
     /**
-     * saved parameter in private var "problem"
+     * Saved parameter in private var "problem.
      * @param message info about exception
      */
-    public FormatterException(String message)//throwable
-    {
+    public FormatterException(final String message) {
         problem = message;
     }
 }

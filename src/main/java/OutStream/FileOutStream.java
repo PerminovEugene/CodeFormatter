@@ -15,20 +15,16 @@ public class FileOutStream implements OutStream {
     private File fileDestination = null;
 
     /**
-     *
-     * @param nameOfFile
-     * @throws StreamException
+     *  Create file out stream.
+     * @param nameOfFile string with name of file for create file.
+     * @throws StreamException if cant create stream.
      */
-    public FileOutStream(String nameOfFile)throws StreamException
-    {
+    public FileOutStream(final String nameOfFile)throws StreamException {
         fileDestination = new File(nameOfFile);
-        try
-        {
+        try {
             fileDestination .createNewFile();
-            fileOutputStream = new FileOutputStream(fileDestination );
-        }
-        catch (IOException e)
-        {
+            fileOutputStream = new FileOutputStream(fileDestination);
+        } catch (IOException e) {
             logger.error("Stream exception in create FileOutStream. ");
             throw new StreamException("File is not found. ");
         }
@@ -37,31 +33,26 @@ public class FileOutStream implements OutStream {
     /**
      *
      * @param symbol which will write in stream
-     * @throws StreamException
+     * @throws StreamException if error in stream at time when we write
      */
-    public void writeSymbol(int symbol)throws StreamException
-    {
+    public final void writeSymbol(final int symbol)throws StreamException {
        try {
             fileOutputStream.write(symbol);
-       }
-       catch (IOException e)
-        {
+       } catch (IOException e) {
             logger.error("Stream exception at write symbol in FileOutStream. ");
             throw new StreamException("Write symbol error. ");
         }
     }
 
     /**
-     * Close stream
-     * @throws StreamException if fileOutputStream was closed early or isn't exist
+     *  Close stream.
+     * @throws StreamException if fileOutputStream was
+     * closed early or isn't exist
      */
-    public void close()throws StreamException
-    {
+    public final void close()throws StreamException {
         try {
             fileOutputStream.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             logger.error("Stream exception in close FileOutStream. ");
             throw new StreamException("Close stream error");
         }

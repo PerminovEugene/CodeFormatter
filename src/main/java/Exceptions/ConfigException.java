@@ -5,8 +5,7 @@ package Exceptions;
  */
 public class ConfigException extends Exception {
     public String problem;
-    public ConfigException(String message)
-    {
+    public ConfigException(final String message) {
         problem = message;
     }
 }

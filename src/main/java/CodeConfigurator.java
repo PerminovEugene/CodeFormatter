@@ -7,10 +7,11 @@ import org.apache.log4j.Logger;
 /**
  * Created by eugenep on 07.07.14.
  */
-public class CodeConfigurator {
+class CodeConfigurator {
 
-    private static Logger logger = Logger.getLogger(CodeConfigurator.class);
-    private InStream inStream;
+    protected static final Logger logger = Logger.getLogger(CodeConfigurator.class);
+
+    private int spaceCount;
 
     /**
      * read symbols out of Formatter_options.java.
@@ -20,6 +21,7 @@ public class CodeConfigurator {
      * @throws Exceptions.ConfigException if error in property file for project.
      */
     public CodeConfigurator()throws StreamException, ConfigException {
+        InStream inStream;
         try {
             inStream = new FileInStream("Formatter_options.java");
         } catch (StreamException streamException) {
@@ -35,13 +37,12 @@ public class CodeConfigurator {
             throw new ConfigException("Don't know this configuration");
         }
     }
-    private int spaceCount;
 
     /**
      * take info about space or tabulation for Formatter.
      * @return -1 if use tabulation. other its number of space;
      */
-    public final int takeSpaceCount() {
+    public final int getSpaceCount() {
         return spaceCount;
     }
 

@@ -6,10 +6,16 @@ package  Exceptions;
 public class StreamException extends Exception {
 
     /**
-     *  Info about trouble.
+     *  String for save info about exception.
      */
-    public String problem;
+    private final String problem;
 
+    /**
+     *  Get exception info.
+     */
+    public String Problem() {
+        return problem;
+    }
     /**
      * saved parameter in private var "problem"
      * @param whatsHappened info about exception

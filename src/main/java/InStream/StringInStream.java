@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
  * Created by eugenep on 02.07.14.
  */
 public class StringInStream implements InStream {
-    private static Logger logger = Logger.getLogger(StringInStream.class);
+    private static final Logger logger = Logger.getLogger(StringInStream.class);
 
     private String source;
     private int numberCurrentChar;

@@ -12,7 +12,6 @@ public class FileOutStream implements OutStream {
     private static Logger logger = Logger.getLogger(FileOutStream.class);
 
     private FileOutputStream fileOutputStream = null;
-    private File fileDestination = null;
 
     /**
      *  Create file out stream.
@@ -20,6 +19,7 @@ public class FileOutStream implements OutStream {
      * @throws StreamException if cant create stream.
      */
     public FileOutStream(final String nameOfFile)throws StreamException {
+        File fileDestination = null;
         fileDestination = new File(nameOfFile);
         try {
             fileDestination .createNewFile();

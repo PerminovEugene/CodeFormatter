@@ -6,24 +6,23 @@ import junit.framework.TestCase;
 import org.junit.Test;
 //import org.apache.log4j.Logger;
 /**
+ *  Tested easy string;
  * Created by eugenep on 04.07.14.
  */
-public class testString extends TestCase{
-    private OutStream destination;
+public class testString extends TestCase {
+    private StringOutStream destination;
     private InStream source;
 
-    protected void setUp()throws Exception
-    {
-        destination = new StringOutStream("q");
-        source = new StringInStream("{{s}}");
+    protected void setUp()throws Exception {
+        destination = new StringOutStream();
+        source = new StringInStream("{s}");
     }
     @Test
-    public void testEmpty()throws Exception
-    {
+    public void testEmpty()throws Exception {
         CodeFormatter codeFormatter = new CodeFormatter();
-        codeFormatter.format(source,destination);
-        OutStream goodDestinationResult = new StringOutStream("{/n    {/n        s/n        }/n    }");
-        assertEquals(goodDestinationResult,destination);
+        codeFormatter.format(source, destination);
+        assertEquals("{\n    s\n}\n", destination.getSting());
+
     }
     protected void tearDown() throws Exception {
         source.close();

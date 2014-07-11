@@ -4,31 +4,26 @@ import org.junit.Test;
 import InStream.StringInStream;
 import InStream.InStream;
 import OutStream.OutStream;
-import OutStream.StringOutStream;
 
 /**
  * Created by eugenep on 04.07.14.
  */
-public class testNullOutStream extends TestCase{
+public class testNullOutStream extends TestCase {
     private OutStream destination;
     private InStream source;
 
-    protected void setUp()throws Exception
-    {
+    protected void setUp()throws Exception {
         destination =  null;
         source = new StringInStream("dfs{}dfs");
     }
 
     @Test
-    public void testString()throws FormatterException
-    {
+    public void testString()throws FormatterException {
         try {
             CodeFormatter codeFormatter = new CodeFormatter();
             codeFormatter.format(source, destination);
             fail("must be exception");
-        }
-        catch (FormatterException exception)
-        {
+        } catch (FormatterException exception) {
             // good
         }
 

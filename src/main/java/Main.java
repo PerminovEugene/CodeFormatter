@@ -6,14 +6,21 @@ import InStream.FileInStream;
 import OutStream.FileOutStream;
 import OutStream.OutStream;
 import org.apache.log4j.Logger;
-public class Main {
 
-    private static Logger logger = Logger.getLogger(Main.class);
+/**
+ *  Main class for start application (not for tests).
+ */
+class Main {
+
+    public static void main() {
+    }
+    private static final Logger logger = Logger.getLogger(Main.class);
     /**
      *
      * @param args command line parameters, args[0]
      *             for Input, args[1] for Output
      */
+
     public static void main(final String[] args) {
 	// write your code here
         if  (args.length == 2)  {
@@ -21,7 +28,7 @@ public class Main {
         }
     }
 
-    public static void startFormat(final String source, final String dest) {
+    private static void startFormat(final String source, final String dest) {
         CodeFormatter codeFormatter = new CodeFormatter();
         try {
             OutStream destinationSymbols = new FileOutStream(dest);
@@ -29,10 +36,10 @@ public class Main {
             codeFormatter.format(sourceSymbols, destinationSymbols);
         } catch (StreamException streamException) {
             logger.error("stream exception in Main, "
-                    + streamException.problem + ". ");
+                    + streamException.Problem() + ". ");
         } catch (FormatterException formatterException)  {
             logger.error("Formatter exception in Main, "
-                    + formatterException.problem + ". ");
+                    + formatterException.Problem() + ". ");
         }
     }
 

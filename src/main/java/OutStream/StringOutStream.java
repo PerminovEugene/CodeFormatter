@@ -6,13 +6,11 @@ import org.apache.log4j.Logger;
  */
 public class StringOutStream implements OutStream {
     private StringBuilder destination;
-    private int numberCurrentChar;
 
     /**
-     *
-     * @param string name of out sting
+     *  Create String Out stream.
      */
-     public  StringOutStream(final String string) {
+     public  StringOutStream() {
         destination = new StringBuilder();
     }
 
@@ -25,5 +23,8 @@ public class StringOutStream implements OutStream {
     }
     public final void close() {
         destination = null;
+    }
+    public final String getSting() {
+        return destination.toString();
     }
 }

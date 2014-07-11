@@ -8,10 +8,10 @@ import java.io.*;
  * Created by eugenep on 01.07.14.
  */
 public class FileInStream implements InStream {
-    private static Logger logger = Logger.getLogger(FileInStream.class);
+    private static final Logger logger = Logger.getLogger(FileInStream.class);
 
     private java.io.FileInputStream fileInputStream;
-    private File fileSource;
+
 
     /**
      *  Create new FileInStream.
@@ -19,6 +19,7 @@ public class FileInStream implements InStream {
      * @throws StreamException if fileName not exist or not found
      */
     public FileInStream(final String fileName)throws StreamException {
+        File fileSource;
         fileSource = new File(fileName);
         if (!fileSource.exists()) {
             logger.error("Stream exception file not exist in FileInSteam");

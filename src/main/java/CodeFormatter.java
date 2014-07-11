@@ -10,8 +10,8 @@ import org.apache.log4j.Logger;
  * Class for static code format.
  */
 
-public class CodeFormatter {
-    private static Logger logger = Logger.getLogger(CodeFormatter.class);
+class CodeFormatter {
+    private static final Logger logger = Logger.getLogger(CodeFormatter.class);
 
     private int levelOfNesting = 0;
     private int spaceCounter;
@@ -49,7 +49,7 @@ public class CodeFormatter {
             }
         } catch (StreamException streamException) {
             logger.error("stream exception in Formatter when write indent. "
-                    + streamException.problem + ". ");
+                    + streamException.Problem() + ". ");
             throw new FormatterException("stream exception write indent");
         }
     }
@@ -60,7 +60,7 @@ public class CodeFormatter {
             destination.writeSymbol(symbol);
         } catch (StreamException streamException) {
             logger.error("streamException in Formatter when go into new string."
-                    + streamException.problem + ". ");
+                    + streamException.Problem() + ". ");
             throw new FormatterException("streamException write at new string");
         }
     }
@@ -80,7 +80,7 @@ public class CodeFormatter {
             throw new FormatterException("stream exception in out stream");
         } catch (FormatterException formatterException) {
             logger.error("Formatter exception in format when write '{'. "
-                    + formatterException.problem);
+                    + formatterException.Problem());
             throw new FormatterException("streamException at write {");
         }
     }
@@ -97,7 +97,7 @@ public class CodeFormatter {
             writeTransferLine(destination);
         } catch (FormatterException formatterException) {
             logger.error("Formatter exception in format when write '{'. "
-                    + formatterException.problem);
+                    + formatterException.Problem());
             throw new FormatterException("stream exception write"
                     + " at new string");
         } catch (StreamException streamException) {
@@ -117,7 +117,7 @@ public class CodeFormatter {
             writeTransferLine(destination);
         } catch (FormatterException formatterException) {
             logger.error("Formatter exception in format when write ';'. "
-                    + formatterException.problem);
+                    + formatterException.Problem());
             throw new FormatterException("stream exception:"
                     + " write at new string");
         } catch (StreamException streamException) {
@@ -189,7 +189,7 @@ public class CodeFormatter {
             destination.writeSymbol(symbol);
         } catch (FormatterException formatterException) {
             logger.error("Formatter exception in format when write '{'. "
-                    + formatterException.problem);
+                    + formatterException.Problem());
             throw new FormatterException("stream exception write "
                     + "at new string");
         } catch (StreamException streamException) {
@@ -210,19 +210,19 @@ public class CodeFormatter {
                 throws FormatterException {
             try {
                 CodeConfigurator configurator = new CodeConfigurator();
-                spaceCounter = configurator.takeSpaceCount();
+                spaceCounter = configurator.getSpaceCount();
             } catch (ConfigException configException) {
                // logger.error("error in CodeConfigurator");
                // throw new FormatterException(configException.problem);
                spaceCounter = 4;
             } catch (StreamException streamException) {
                 logger.error(" exception in CodeConfigurator null pointer. ");
-                throw new FormatterException(streamException.problem);
+                throw new FormatterException(streamException.Problem());
             }
             formatStart(source, destination);
         }
-        public final void formatStart(final InStream source,
-                                final OutStream destination)
+        final void formatStart(final InStream source,
+                               final OutStream destination)
                 throws FormatterException {
         try {
             if (source.isEnd()) {
@@ -231,8 +231,8 @@ public class CodeFormatter {
             }
         } catch (StreamException streamException) {
             logger.error("stream exception in Main, "
-                    + streamException.problem + ". ");
-            throw new FormatterException(streamException.problem);
+                    + streamException.Problem() + ". ");
+            throw new FormatterException(streamException.Problem());
         } catch (NullPointerException nullPointException) {
             logger.error("Formatter exception in CodeFormatter null pointer. ");
             throw new FormatterException("nullPointerException");
@@ -245,6 +245,7 @@ public class CodeFormatter {
             while (!source.isEnd()) {
                 pastSymbol1 = symbol;
                 symbol = source.readSymbol();
+                logger.debug("readed " + (char) symbol);
                 switch (symbol) {
                     case'{':
                         processingOpeningParenthesis(destination);
@@ -277,14 +278,14 @@ public class CodeFormatter {
             }
         } catch (StreamException streamException) {
             logger.error("stream exception in Formatter, "
-                    + streamException.problem + ". ");
+                    + streamException.Problem() + ". ");
             throw new FormatterException("stream exception: "
-                    + streamException.problem);
+                    + streamException.Problem());
         } catch (FormatterException formatterException) {
             logger.error("stream exception in Formatter, "
-                    + formatterException.problem + ". ");
+                    + formatterException.Problem() + ". ");
             throw new FormatterException("formatter exception: "
-                    + formatterException.problem);
+                    + formatterException.Problem());
         } catch (NullPointerException nullPointerException) {
              logger.error("null pointer exception in Formatter");
              throw new FormatterException("nullPointerException");

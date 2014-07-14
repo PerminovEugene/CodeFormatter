@@ -23,4 +23,8 @@ public class FormatterException extends Exception {
     public FormatterException(final String message) {
         problem = message;
     }
+    public FormatterException (final StreamException ex)
+    {
+        problem = ex.Problem();
+    }
 }

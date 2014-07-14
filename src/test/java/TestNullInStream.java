@@ -9,8 +9,7 @@ import org.junit.Test;
  *  Tested null in InStream. Must be exception.
  * Created by eugenep on 04.07.14.
  */
-public class testNullInStream extends TestCase{
-
+public class TestNullInStream{
     private OutStream destination;
     private InStream source;
 
@@ -19,15 +18,10 @@ public class testNullInStream extends TestCase{
         source = null;
     }
 
-    @Test
-    public void testString()throws FormatterException {
-        try {
-            CodeFormatter codeFormatter = new CodeFormatter();
-            codeFormatter.format(source, destination);
-            fail("must be exception");
-        } catch (FormatterException exception) {
-            // good
-        }
+    @Test(expected = FormatterException.class)
+    public void testString()throws Exception {
+        CodeFormatter codeFormatter = new CodeFormatter();
+        codeFormatter.format(source, destination);
     }
 
 }

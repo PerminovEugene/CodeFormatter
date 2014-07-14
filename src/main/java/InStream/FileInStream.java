@@ -24,6 +24,7 @@ public class FileInStream implements InStream {
         if (!fileSource.exists()) {
             logger.error("Stream exception file not exist in FileInSteam");
             throw new StreamException("File not exist");
+
         }
         try {
             fileInputStream = new java.io.FileInputStream(fileSource);

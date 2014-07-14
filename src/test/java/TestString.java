@@ -9,7 +9,7 @@ import org.junit.Test;
  *  Tested easy string;
  * Created by eugenep on 04.07.14.
  */
-public class testString extends TestCase {
+public class TestString extends TestCase {
     private StringOutStream destination;
     private InStream source;
 

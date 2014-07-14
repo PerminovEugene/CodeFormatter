@@ -9,7 +9,7 @@ import org.junit.Test;
  *  Tested string in InSteam == "".
  * Created by eugenep on 04.07.14.
  */
-public class testEmptyString {
+public class TestEmptyString {
 
     private OutStream destination;
     private InStream source;
@@ -18,8 +18,7 @@ public class testEmptyString {
         destination =  new StringOutStream();
         source = new StringInStream("");
     }
-
-    @Test(expected = FormatterException.class) //// swat
+    @Test(expected = FormatterException.class)
     public void testString()throws Exception {
           CodeFormatter codeFormatter = new CodeFormatter();
           codeFormatter.format(source, destination);

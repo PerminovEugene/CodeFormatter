@@ -8,7 +8,7 @@ import OutStream.OutStream;
 /**
  * Created by eugenep on 04.07.14.
  */
-public class TestNullOutStream{
+public class TestNullOutStream {
     private OutStream destination;
     private InStream source;
 

@@ -16,3 +16,6 @@ target/
 out/
 bin/
 logs/
+
+ForTest_Stream_In.java
+ForTest_Stream_Out.java

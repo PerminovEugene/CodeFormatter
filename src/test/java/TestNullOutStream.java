@@ -19,7 +19,7 @@ public class TestNullOutStream {
 
     @Test(expected = FormatterException.class)
     public void testString()throws FormatterException {
-            CodeFormatter codeFormatter = new CodeFormatter();
-            codeFormatter.format(source, destination);
+        CodeFormatter codeFormatter = new CodeFormatter();
+        codeFormatter.format(source, destination);
     }
 }

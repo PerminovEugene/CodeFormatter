@@ -13,8 +13,6 @@ import org.apache.log4j.Logger;
 class CodeFormatter {
     private static final Logger logger = Logger.getLogger(CodeFormatter.class);
     private static final int SPACE_COUNTER = 4;
-    //private int levelOfNesting = 0;
-    //private int spaceCounter;
 
     /**
      * Format source stream. Removed extra space, added spaces
@@ -64,31 +62,35 @@ class CodeFormatter {
             throw new FormatterException("nullPointerException");
         }
         int symbol = 0;
-        int levelOfNesting = 0;
+//        int levelOfNesting = 0;
         boolean  isNewString1 = false;
         boolean pastIsOperand = false;
         int pastSymbol;
+        Context context = new Context();
         try {
             while (!source.isEnd()) {
                 pastSymbol = symbol;
                 symbol = source.readSymbol();
-                logger.debug("readed " + (char) symbol);
+//                context.setSymbol(source.readSymbol());
+                logger.debug("readed " + (char) symbol + " old vers");
+                logger.debug("lon " + context.getLevelOfNesting() + " new vers");
+//                logger.debug("lon " + levelOfNesting + " old vers");
                 switch (symbol) {
                     case'{':
-                        processingOpeningParenthesis(destination, symbolForNewString,
-                                spaceCounter, levelOfNesting, isNewString1);
+                        processingOpeningParenthesis(context, destination, symbolForNewString,
+                                spaceCounter, isNewString1);
                         isNewString1 = true;
-                        levelOfNesting++;
+//                        levelOfNesting++;
                         break;
                     case'}':
-                        processingClosingParenthesis(destination, symbolForNewString, spaceCounter,
-                                levelOfNesting, isNewString1);
-                        levelOfNesting--;
+                        processingClosingParenthesis(context, destination, symbolForNewString, spaceCounter,
+                                isNewString1);
+//                        levelOfNesting--;
                         isNewString1 = true;
                         break;
                     case';':
-                        processingDotAndComma(destination, symbolForNewString, spaceCounter,
-                                levelOfNesting, isNewString1);
+                        processingDotAndComma(context, destination, symbolForNewString, spaceCounter,
+                                isNewString1);
                         isNewString1 = true;
                         break;
                     case ' ':
@@ -97,8 +99,8 @@ class CodeFormatter {
                     case '\n':
                         break;
                     case ',':
-                        processingComa(destination, symbolForNewString,
-                                spaceCounter, levelOfNesting, isNewString1, pastSymbol);
+                        processingComa(context, destination, symbolForNewString,
+                                spaceCounter, isNewString1, pastSymbol);
                         break;
                     case '*':
                     case '/':
@@ -111,7 +113,7 @@ class CodeFormatter {
                         break;
                     default:
                         processingNotSpecialSymbol(
-                                destination, symbol, symbolForNewString, spaceCounter, levelOfNesting,
+                                context, destination, symbol, symbolForNewString, spaceCounter,
                                 isNewString1, pastIsOperand);
                         isNewString1 = false;
                         pastIsOperand = false;
@@ -142,18 +144,18 @@ class CodeFormatter {
 
     private void writeIndent(
             final OutStream destination, final int symbolForNewString,
-            final int spaceCounter, final int levelOfNesting
+            final int spaceCounter, final Context context
     )
             throws FormatterException {
         try {
             int symbol = ' ';
             if (symbolForNewString == '\t') {
                 symbol = '\t';
-                for (int i = 0; i < levelOfNesting; i++) {
+                for (int i = 0; i < context.getLevelOfNesting(); i++) {
                     destination.writeSymbol(symbol);
                 }
             } else {
-                for (int i = 0; i < spaceCounter * levelOfNesting; i++) {
+                for (int i = 0; i < spaceCounter * context.getLevelOfNesting(); i++) {
                     destination.writeSymbol(symbol);
                 }
             }
@@ -175,18 +177,16 @@ class CodeFormatter {
         }
     }
     private void processingOpeningParenthesis(
-            final OutStream destination, final int symbolForNewString, final int spaceCounter,
-            int levelOfNesting, final boolean isNewString1
+            Context context, final OutStream destination, final int symbolForNewString, final int spaceCounter,
+            final boolean isNewString1
     ) throws  FormatterException {
         try {
             if (!isNewString1) {
                 writeTransferLine(destination);
             }
-            writeIndent(destination, symbolForNewString, spaceCounter, levelOfNesting);
+            writeIndent(destination, symbolForNewString, spaceCounter, context);
             destination.writeSymbol('{');
-           // increaseNesting(levelOfNesting);
-            levelOfNesting++;
-            logger.error(levelOfNesting);
+            context.upLevelOfNesting();
             writeTransferLine(destination);
         } catch (StreamException streamException) {
             //logger.error("Stream exception in out stream when write '{'. ");
@@ -198,20 +198,19 @@ class CodeFormatter {
         }
     }
     private void processingClosingParenthesis(
-            final OutStream destination, final int symbolForNewString,  final int spaceCounter,
-            int levelOfNesting, final boolean isNewString1
+            Context context, final OutStream destination, final int symbolForNewString,  final int spaceCounter,
+            final boolean isNewString1
     ) throws  FormatterException {
         try {
             if (!isNewString1) {
                 writeTransferLine(destination);
             }
-            //reduceNesting(levelOfNesting);
-            levelOfNesting--;
-            if (levelOfNesting < 0) {
-                logger.error(levelOfNesting);
+            context.downLevelOfNesting();
+            if (context.getLevelOfNesting() < 0) {
+                logger.error(context.getLevelOfNesting() + " this level of nesting! He must be more!");
                 throw new FormatterException("} more then {");
             }
-            writeIndent(destination, symbolForNewString, spaceCounter, levelOfNesting);
+            writeIndent(destination, symbolForNewString, spaceCounter, context);
             destination.writeSymbol('}');
             writeTransferLine(destination);
         } catch (FormatterException formatterException) {
@@ -225,13 +224,13 @@ class CodeFormatter {
         }
     }
     private void processingDotAndComma(
-            final OutStream destination, final int symbolForNewString, final int spaceCounter,
-            final int levelOfNesting, final boolean isNewString1
+            Context context,final OutStream destination, final int symbolForNewString, final int spaceCounter,
+            final boolean isNewString1
     )
             throws  FormatterException {
         try {
             if (isNewString1)  {
-                writeIndent(destination, symbolForNewString, spaceCounter, levelOfNesting);
+                writeIndent(destination, symbolForNewString, spaceCounter, context);
             }
             destination.writeSymbol(';');
             writeTransferLine(destination);
@@ -257,13 +256,13 @@ class CodeFormatter {
         }
     }
     private void processingComa(
-            final OutStream destination, final int symbolForNewString, final int spaceCounter,
-            final int levelOfNesting, final boolean isNewString1, final int pastSymbol
+            Context context,final OutStream destination, final int symbolForNewString, final int spaceCounter,
+            final boolean isNewString1, final int pastSymbol
     )
             throws  FormatterException {
         try {
             if (isNewString1) {
-                writeIndent(destination, symbolForNewString, spaceCounter, levelOfNesting);
+                writeIndent(destination, symbolForNewString, spaceCounter, context);
             }
             if (pastSymbol != ' ') {
                 destination.writeSymbol(' ');
@@ -295,13 +294,13 @@ class CodeFormatter {
         }
     }
     private void processingNotSpecialSymbol(
-            final OutStream destination, final int symbol, final int symbolForNewString, final int spaceCounter,
-            final int levelOfNesting, final boolean isNewString1, final boolean pastIsOperand
+            Context context,final OutStream destination, final int symbol, final int symbolForNewString, final int spaceCounter,
+            final boolean isNewString1, final boolean pastIsOperand
     )
             throws  FormatterException {
         try {
             if (isNewString1) {
-                writeIndent(destination, symbolForNewString, spaceCounter, levelOfNesting);
+                writeIndent(destination, symbolForNewString, spaceCounter, context);
             } else {
                 if (pastIsOperand) {
                     destination.writeSymbol(' ');

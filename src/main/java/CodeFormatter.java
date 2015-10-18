@@ -63,7 +63,6 @@ class CodeFormatter {
         }
         int symbol = 0;
 //        int levelOfNesting = 0;
-        boolean  isNewString1 = false;
         boolean pastIsOperand = false;
         int pastSymbol;
         Context context = new Context();
@@ -71,51 +70,40 @@ class CodeFormatter {
             while (!source.isEnd()) {
                 pastSymbol = symbol;
                 symbol = source.readSymbol();
-//                context.setSymbol(source.readSymbol());
-                logger.debug("readed " + (char) symbol + " old vers");
                 logger.debug("lon " + context.getLevelOfNesting() + " new vers");
-//                logger.debug("lon " + levelOfNesting + " old vers");
                 switch (symbol) {
                     case'{':
                         processingOpeningParenthesis(context, destination, symbolForNewString,
-                                spaceCounter, isNewString1);
-                        isNewString1 = true;
-//                        levelOfNesting++;
+                                spaceCounter);
                         break;
                     case'}':
-                        processingClosingParenthesis(context, destination, symbolForNewString, spaceCounter,
-                                isNewString1);
-//                        levelOfNesting--;
-                        isNewString1 = true;
+                        processingClosingParenthesis(context, destination, symbolForNewString, spaceCounter);
                         break;
                     case';':
-                        processingDotAndComma(context, destination, symbolForNewString, spaceCounter,
-                                isNewString1);
-                        isNewString1 = true;
+                        processingDotAndComma(context, destination, symbolForNewString, spaceCounter);
                         break;
                     case ' ':
-                        processingSpace(destination, isNewString1, pastSymbol);
+                        processingSpace(destination, pastSymbol, context);
                         break;
                     case '\n':
                         break;
                     case ',':
                         processingComa(context, destination, symbolForNewString,
-                                spaceCounter, isNewString1, pastSymbol);
+                                spaceCounter, pastSymbol);
                         break;
                     case '*':
                     case '/':
                     case '-':
                     case '+':
                     case '=':
-                        processingOperand(destination, symbol, pastSymbol);
-                        isNewString1 = false;
+                        processingOperand(destination, symbol, pastSymbol, context);
                         pastIsOperand = true;
                         break;
                     default:
                         processingNotSpecialSymbol(
                                 context, destination, symbol, symbolForNewString, spaceCounter,
-                                isNewString1, pastIsOperand);
-                        isNewString1 = false;
+                                pastIsOperand);
+
                         pastIsOperand = false;
                         break;
                 }
@@ -138,9 +126,6 @@ class CodeFormatter {
     /**
      * Things for format.
      */
-   // private boolean isNewString1 = false;
-    //private int pastSymbol1 = 0;
-    //private boolean pastIsOperand = false;
 
     private void writeIndent(
             final OutStream destination, final int symbolForNewString,
@@ -177,15 +162,15 @@ class CodeFormatter {
         }
     }
     private void processingOpeningParenthesis(
-            Context context, final OutStream destination, final int symbolForNewString, final int spaceCounter,
-            final boolean isNewString1
+            Context context, final OutStream destination, final int symbolForNewString, final int spaceCounter
     ) throws  FormatterException {
         try {
-            if (!isNewString1) {
+            if (context.getIsNewString() == false) {
                 writeTransferLine(destination);
             }
             writeIndent(destination, symbolForNewString, spaceCounter, context);
             destination.writeSymbol('{');
+            context.setIsNewString(true);
             context.upLevelOfNesting();
             writeTransferLine(destination);
         } catch (StreamException streamException) {
@@ -198,11 +183,10 @@ class CodeFormatter {
         }
     }
     private void processingClosingParenthesis(
-            Context context, final OutStream destination, final int symbolForNewString,  final int spaceCounter,
-            final boolean isNewString1
+            Context context, final OutStream destination, final int symbolForNewString,  final int spaceCounter
     ) throws  FormatterException {
         try {
-            if (!isNewString1) {
+            if (context.getIsNewString() == false) {
                 writeTransferLine(destination);
             }
             context.downLevelOfNesting();
@@ -213,6 +197,7 @@ class CodeFormatter {
             writeIndent(destination, symbolForNewString, spaceCounter, context);
             destination.writeSymbol('}');
             writeTransferLine(destination);
+            context.setIsNewString( true );
         } catch (FormatterException formatterException) {
             logger.error("Formatter exception in format when write '{'. "
                     + formatterException.Problem());
@@ -224,16 +209,16 @@ class CodeFormatter {
         }
     }
     private void processingDotAndComma(
-            Context context,final OutStream destination, final int symbolForNewString, final int spaceCounter,
-            final boolean isNewString1
+            Context context,final OutStream destination, final int symbolForNewString, final int spaceCounter
     )
             throws  FormatterException {
         try {
-            if (isNewString1)  {
+            if (context.getIsNewString() == true)  {
                 writeIndent(destination, symbolForNewString, spaceCounter, context);
             }
             destination.writeSymbol(';');
             writeTransferLine(destination);
+            context.setIsNewString( true );
         } catch (FormatterException formatterException) {
             logger.error("Formatter exception in format when write ';'. "
                     + formatterException.Problem());
@@ -244,10 +229,10 @@ class CodeFormatter {
             throw new FormatterException(streamException);
         }
     }
-    private void processingSpace(final OutStream destination, final boolean isNewString1, final int pastSymbol)
+    private void processingSpace(final OutStream destination, final int pastSymbol, Context context)
             throws  FormatterException {
         try {
-            if (!isNewString1 && pastSymbol != ' ') {
+            if (context.getIsNewString()== false && pastSymbol != ' ') {
                 destination.writeSymbol(' ');
             }
         } catch (StreamException streamException) {
@@ -257,11 +242,11 @@ class CodeFormatter {
     }
     private void processingComa(
             Context context,final OutStream destination, final int symbolForNewString, final int spaceCounter,
-            final boolean isNewString1, final int pastSymbol
+            final int pastSymbol
     )
             throws  FormatterException {
         try {
-            if (isNewString1) {
+            if (context.getIsNewString() == true) {
                 writeIndent(destination, symbolForNewString, spaceCounter, context);
             }
             if (pastSymbol != ' ') {
@@ -274,7 +259,7 @@ class CodeFormatter {
         }
     }
     private  void processingOperand(
-            final OutStream destination, final int symbol, final int pastSymbol
+            final OutStream destination, final int symbol, final int pastSymbol, Context context
     ) throws FormatterException {
         try {
             if ((pastSymbol != ' ')
@@ -288,6 +273,7 @@ class CodeFormatter {
                 destination.writeSymbol((int) ' ');
             }
             destination.writeSymbol(symbol);
+            context.setIsNewString( false );
         } catch (StreamException streamException) {
             //logger.error("Stream exception in out stream when write operand. ");
             throw new FormatterException(streamException);
@@ -295,11 +281,11 @@ class CodeFormatter {
     }
     private void processingNotSpecialSymbol(
             Context context,final OutStream destination, final int symbol, final int symbolForNewString, final int spaceCounter,
-            final boolean isNewString1, final boolean pastIsOperand
+            final boolean pastIsOperand
     )
             throws  FormatterException {
         try {
-            if (isNewString1) {
+            if (context.getIsNewString() == true) {
                 writeIndent(destination, symbolForNewString, spaceCounter, context);
             } else {
                 if (pastIsOperand) {
@@ -307,6 +293,7 @@ class CodeFormatter {
                 }
             }
             destination.writeSymbol(symbol);
+            context.setIsNewString(false);
         } catch (FormatterException formatterException) {
             logger.error("Formatter exception in format when write '{'. "
                     + formatterException.Problem());

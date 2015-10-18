@@ -61,19 +61,16 @@ class CodeFormatter {
             //logger.error("Formatter exception in CodeFormatter null pointer. ");
             throw new FormatterException("nullPointerException");
         }
-        int symbol = 0;
-//        boolean pastIsOperand = false;
+//        int symbol = 0;
         int pastSymbol;
         Context context = new Context();
         try {
             while (!source.isEnd()) {
-                pastSymbol = symbol;
-                symbol = source.readSymbol();
-                logger.debug("lon " + context.getLevelOfNesting() + " new vers");
-                switch (symbol) {
+//                pastSymbol = symbol;
+                context.setSymbol(source.readSymbol());
+                switch (context.getSymbol()) {
                     case'{':
-                        processingOpeningParenthesis(context, destination, symbolForNewString,
-                                spaceCounter);
+                        processingOpeningParenthesis(context, destination, symbolForNewString, spaceCounter);
                         break;
                     case'}':
                         processingClosingParenthesis(context, destination, symbolForNewString, spaceCounter);
@@ -82,27 +79,22 @@ class CodeFormatter {
                         processingDotAndComma(context, destination, symbolForNewString, spaceCounter);
                         break;
                     case ' ':
-                        processingSpace(destination, pastSymbol, context);
+                        processingSpace(destination, context);
                         break;
                     case '\n':
                         break;
                     case ',':
-                        processingComa(context, destination, symbolForNewString,
-                                spaceCounter, pastSymbol);
+                        processingComa(context, destination, symbolForNewString, spaceCounter);
                         break;
                     case '*':
                     case '/':
                     case '-':
                     case '+':
                     case '=':
-                        processingOperand(destination, symbol, pastSymbol, context);
-
+                        processingOperand(destination, context);
                         break;
                     default:
-                        processingNotSpecialSymbol(
-                                context, destination, symbol, symbolForNewString, spaceCounter);
-
-
+                        processingNotSpecialSymbol(context, destination, symbolForNewString, spaceCounter);
                         break;
                 }
             }
@@ -227,10 +219,10 @@ class CodeFormatter {
             throw new FormatterException(streamException);
         }
     }
-    private void processingSpace(final OutStream destination, final int pastSymbol, Context context)
+    private void processingSpace(final OutStream destination, Context context)
             throws  FormatterException {
         try {
-            if (context.getIsNewString()== false && pastSymbol != ' ') {
+            if (context.getIsNewString()== false && context.getPastSymbol() != ' ') {
                 destination.writeSymbol(' ');
             }
         } catch (StreamException streamException) {
@@ -239,15 +231,14 @@ class CodeFormatter {
         }
     }
     private void processingComa(
-            Context context,final OutStream destination, final int symbolForNewString, final int spaceCounter,
-            final int pastSymbol
+            Context context,final OutStream destination, final int symbolForNewString, final int spaceCounter
     )
             throws  FormatterException {
         try {
             if (context.getIsNewString() == true) {
                 writeIndent(destination, symbolForNewString, spaceCounter, context);
             }
-            if (pastSymbol != ' ') {
+            if (context.getPastSymbol() != ' ') {
                 destination.writeSymbol(' ');
             }
             destination.writeSymbol('(');
@@ -257,9 +248,10 @@ class CodeFormatter {
         }
     }
     private  void processingOperand(
-            final OutStream destination, final int symbol, final int pastSymbol, Context context
+            final OutStream destination, Context context
     ) throws FormatterException {
         try {
+            int pastSymbol = context.getPastSymbol();
             if ((pastSymbol != ' ')
                     && (pastSymbol != '=')
                     && (pastSymbol != '-')
@@ -270,7 +262,7 @@ class CodeFormatter {
                     && (pastSymbol != '!')) {
                 destination.writeSymbol((int) ' ');
             }
-            destination.writeSymbol(symbol);
+            destination.writeSymbol(context.getSymbol());
             context.setIsNewString( false );
             context.setPastIsOperand( true );
         } catch (StreamException streamException) {
@@ -279,7 +271,7 @@ class CodeFormatter {
         }
     }
     private void processingNotSpecialSymbol(
-            Context context,final OutStream destination, final int symbol, final int symbolForNewString, final int spaceCounter
+            Context context,final OutStream destination, final int symbolForNewString, final int spaceCounter
     )
             throws  FormatterException {
         try {
@@ -290,7 +282,7 @@ class CodeFormatter {
                     destination.writeSymbol(' ');
                 }
             }
-            destination.writeSymbol(symbol);
+            destination.writeSymbol(context.getSymbol());
             context.setIsNewString(false);
             context.setPastIsOperand( false );
         } catch (FormatterException formatterException) {

@@ -62,8 +62,7 @@ class CodeFormatter {
             throw new FormatterException("nullPointerException");
         }
         int symbol = 0;
-//        int levelOfNesting = 0;
-        boolean pastIsOperand = false;
+//        boolean pastIsOperand = false;
         int pastSymbol;
         Context context = new Context();
         try {
@@ -97,14 +96,13 @@ class CodeFormatter {
                     case '+':
                     case '=':
                         processingOperand(destination, symbol, pastSymbol, context);
-                        pastIsOperand = true;
+
                         break;
                     default:
                         processingNotSpecialSymbol(
-                                context, destination, symbol, symbolForNewString, spaceCounter,
-                                pastIsOperand);
+                                context, destination, symbol, symbolForNewString, spaceCounter);
 
-                        pastIsOperand = false;
+
                         break;
                 }
             }
@@ -274,26 +272,27 @@ class CodeFormatter {
             }
             destination.writeSymbol(symbol);
             context.setIsNewString( false );
+            context.setPastIsOperand( true );
         } catch (StreamException streamException) {
             //logger.error("Stream exception in out stream when write operand. ");
             throw new FormatterException(streamException);
         }
     }
     private void processingNotSpecialSymbol(
-            Context context,final OutStream destination, final int symbol, final int symbolForNewString, final int spaceCounter,
-            final boolean pastIsOperand
+            Context context,final OutStream destination, final int symbol, final int symbolForNewString, final int spaceCounter
     )
             throws  FormatterException {
         try {
             if (context.getIsNewString() == true) {
                 writeIndent(destination, symbolForNewString, spaceCounter, context);
             } else {
-                if (pastIsOperand) {
+                if (context.getPastIsOperand() == true) {
                     destination.writeSymbol(' ');
                 }
             }
             destination.writeSymbol(symbol);
             context.setIsNewString(false);
+            context.setPastIsOperand( false );
         } catch (FormatterException formatterException) {
             logger.error("Formatter exception in format when write '{'. "
                     + formatterException.Problem());

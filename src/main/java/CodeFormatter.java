@@ -61,12 +61,9 @@ class CodeFormatter {
             //logger.error("Formatter exception in CodeFormatter null pointer. ");
             throw new FormatterException("nullPointerException");
         }
-//        int symbol = 0;
-        int pastSymbol;
         Context context = new Context();
         try {
             while (!source.isEnd()) {
-//                pastSymbol = symbol;
                 context.setSymbol(source.readSymbol());
                 switch (context.getSymbol()) {
                     case'{':

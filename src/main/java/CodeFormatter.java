@@ -1,9 +1,15 @@
+import Context.Context;
 import Exceptions.ConfigException;
 import Exceptions.FormatterException;
 import Exceptions.StreamException;
+import Handlers.Handler;
+import Handlers.LitterHandler;
 import InStream.InStream;
 import OutStream.OutStream;
+import Rules.CodeRules;
+import Rules.JavaRules;
 import org.apache.log4j.Logger;
+import Context.Context;
 
 /**
  * Created by eugenep on 01.07.14.
@@ -33,12 +39,8 @@ class CodeFormatter {
             symbol = configurator.getSymbolForNewString();
             spaceCounter = configurator.getSpaceCount();
         } catch (ConfigException configException) {
-            // logger.error("error in CodeConfigurator");
-            //throw new FormatterException(configException.problem);
-            //throw new FormatterException(configException.getMessage());
             spaceCounter = SPACE_COUNTER;
         } catch (StreamException streamException) {
-           // logger.error(" exception in CodeConfigurator null pointer. ");
             throw new FormatterException(streamException.Problem());
         }
         formatStart(source, destination, symbol, spaceCounter);
@@ -63,6 +65,9 @@ class CodeFormatter {
         }
         Context context = new Context();
         try {
+            Handler letterHandler = new LitterHandler();
+            CodeRules codeRules = new JavaRules();
+
             while (!source.isEnd()) {
                 context.setSymbol(source.readSymbol());
                 switch (context.getSymbol()) {
@@ -91,6 +96,7 @@ class CodeFormatter {
                         processingOperand(destination, context);
                         break;
                     default:
+                        letterHandler.handle(context, destination, codeRules);
                         processingNotSpecialSymbol(context, destination, symbolForNewString, spaceCounter);
                         break;
                 }

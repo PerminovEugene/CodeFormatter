@@ -1,5 +1,5 @@
 package InStream;
-{afaad}
+{a  ,fa,  ad,f}
                                                          ((a+d)*c-l)==d+=e-(f*(fwe-1))++;
 {
     afaff}

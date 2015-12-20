@@ -9,6 +9,7 @@ public class JavaRules implements CodeRules{
     private int transferLineSymbol = '\n';
     private int openParenthesisSymbol = '{';
     private int closeParenthesisSymbol = '}';
+    private int nearComaIndent = ' ';
 
     public int getIndentSymbol() {return indent;}
 
@@ -19,4 +20,6 @@ public class JavaRules implements CodeRules{
     public int getOpenParenthesisSymbol() {return openParenthesisSymbol;}
 
     public int getCloseParenthesisSymbol() {return closeParenthesisSymbol;}
+
+    public int getNearComaIndent() {return nearComaIndent;}
 }

@@ -1,6 +1,6 @@
 package InStream;
 {
-  afaad
+  a ,fa,  ad, f
 }
 ((a + d) * c - l) == d += e - (f * (fwe - 1)) ++;
 {
@@ -17,9 +17,9 @@ a +== b -+ c -* t / k = * ( = a = ) = * t();
   {
     {
       {
-            }
-        }
+      }
     }
+  }
 }
 r + e - e + f_adfa / 1 / 34 - 33
 {
@@ -34,23 +34,23 @@ faimport Exceptions.StreamException;
   {
     source =  string;
     numberCurrentChar =  0;
-    }
+  }
 /** *  Read one symbol from stream *  @return symbol which read *  @throws StreamException if read from end of string */  public int readSymbol() throws StreamException 
   {
     if (numberCurrentChar ==  source.length()) 
     {
       throw new StreamException("cant read in out of range");
-        }
+    }
     int symbol =  source.charAt(numberCurrentChar);
     numberCurrentChar ++;
     return symbol;
-    }
-/** *  For take info about end of string *  @return true if now end of string ( else return false */  public boolean isEnd() 
+  }
+/** *  For take info about end of string *  @return true if now end of string,  else return false */  public boolean isEnd() 
   {
     return (numberCurrentChar ==  source.length());
-    }
+  }
 /** * */  public void close() 
   {
     source =  null;
-    }
+  }
 }

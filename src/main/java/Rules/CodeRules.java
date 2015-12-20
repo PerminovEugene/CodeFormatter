@@ -10,4 +10,5 @@ public interface CodeRules {
     int getTransferLineSymbol();
     int getOpenParenthesisSymbol();
     int getCloseParenthesisSymbol();
+    int getNearComaIndent();
 }

@@ -4,10 +4,7 @@ import Context.Context;
 import Exceptions.ConfigException;
 import Exceptions.FormatterException;
 import Exceptions.StreamException;
-import Handlers.CloseParenthesisHandler;
-import Handlers.Handler;
-import Handlers.LitterHandler;
-import Handlers.OpenParenthesisHandler;
+import Handlers.*;
 import InStream.InStream;
 import OutStream.OutStream;
 import Rules.CodeRules;
@@ -73,6 +70,12 @@ class CodeFormatter {
             Handler letterHandler = new LitterHandler(javaWriterCommand);
             Handler openParenthesisHandler = new OpenParenthesisHandler(javaWriterCommand);
             Handler closeParenthesisHandler = new CloseParenthesisHandler(javaWriterCommand);
+            Handler comaHandler = new ComaHandler(javaWriterCommand);
+            Handler operandHandler = new OperandHandler(javaWriterCommand);
+            Handler spaceHandler = new SpaceHandler(javaWriterCommand);
+            Handler dotAndComaHandler = new DotAndCommaHandler(javaWriterCommand);
+
+
             CodeRules codeRules = new JavaRules();
 
             while (!source.isEnd()) {
@@ -85,22 +88,22 @@ class CodeFormatter {
                         closeParenthesisHandler.handle(context, destination, codeRules);
                         break;
                     case';':
-                        processingDotAndComma(context, destination, symbolForNewString, spaceCounter);
+                        dotAndComaHandler.handle(context, destination, codeRules);
                         break;
                     case ' ':
-                        processingSpace(destination, context);
+                        spaceHandler.handle(context, destination, codeRules);
                         break;
                     case '\n':
                         break;
                     case ',':
-                        processingComa(context, destination, symbolForNewString, spaceCounter);
+                        comaHandler.handle(context, destination, codeRules);
                         break;
                     case '*':
                     case '/':
                     case '-':
                     case '+':
                     case '=':
-                        processingOperand(destination, context);
+                        operandHandler.handle(context, destination, codeRules);
                         break;
                     default:
                         letterHandler.handle(context, destination, codeRules);
@@ -109,9 +112,6 @@ class CodeFormatter {
             }
         } catch (StreamException streamException) {
             throw new FormatterException(streamException);
-        } catch (FormatterException formatterException) {
-            throw new FormatterException("formatter exception: "
-                    + formatterException.Problem());
         } catch (NullPointerException nullPointerException) {
             throw new FormatterException("nullPointerException");
         }

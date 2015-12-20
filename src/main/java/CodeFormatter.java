@@ -1,9 +1,13 @@
+import Commands.JavaWriterCommand;
+import Commands.WriterCommand;
 import Context.Context;
 import Exceptions.ConfigException;
 import Exceptions.FormatterException;
 import Exceptions.StreamException;
+import Handlers.CloseParenthesisHandler;
 import Handlers.Handler;
 import Handlers.LitterHandler;
+import Handlers.OpenParenthesisHandler;
 import InStream.InStream;
 import OutStream.OutStream;
 import Rules.CodeRules;
@@ -65,17 +69,20 @@ class CodeFormatter {
         }
         Context context = new Context();
         try {
-            Handler letterHandler = new LitterHandler();
+            WriterCommand javaWriterCommand = new JavaWriterCommand();
+            Handler letterHandler = new LitterHandler(javaWriterCommand);
+            Handler openParenthesisHandler = new OpenParenthesisHandler(javaWriterCommand);
+            Handler closeParenthesisHandler = new CloseParenthesisHandler(javaWriterCommand);
             CodeRules codeRules = new JavaRules();
 
             while (!source.isEnd()) {
                 context.setSymbol(source.readSymbol());
                 switch (context.getSymbol()) {
                     case'{':
-                        processingOpeningParenthesis(context, destination, symbolForNewString, spaceCounter);
+                        openParenthesisHandler.handle(context, destination, codeRules);
                         break;
                     case'}':
-                        processingClosingParenthesis(context, destination, symbolForNewString, spaceCounter);
+                        closeParenthesisHandler.handle(context, destination, codeRules);
                         break;
                     case';':
                         processingDotAndComma(context, destination, symbolForNewString, spaceCounter);
@@ -97,21 +104,15 @@ class CodeFormatter {
                         break;
                     default:
                         letterHandler.handle(context, destination, codeRules);
-                        processingNotSpecialSymbol(context, destination, symbolForNewString, spaceCounter);
                         break;
                 }
             }
         } catch (StreamException streamException) {
-            //logger.error("stream exception in Formatter, "
-            //        + streamException.Problem() + ". ");
             throw new FormatterException(streamException);
         } catch (FormatterException formatterException) {
-            //logger.error("stream exception in Formatter, "
-            //        + formatterException.Problem() + ". ");
             throw new FormatterException("formatter exception: "
                     + formatterException.Problem());
         } catch (NullPointerException nullPointerException) {
-            //logger.error("null pointer exception in Formatter");
             throw new FormatterException("nullPointerException");
         }
     }

@@ -7,4 +7,7 @@ public interface CodeRules {
 
     int getIndentSymbol();
     int getIndentCounter();
+    int getTransferLineSymbol();
+    int getOpenParenthesisSymbol();
+    int getCloseParenthesisSymbol();
 }

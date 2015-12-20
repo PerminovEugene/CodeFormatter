@@ -1,8 +1,10 @@
 package Handlers;
 
+import Commands.WriterCommand;
 import Context.Context;
 import Exceptions.FormatterException;
 import Exceptions.StreamException;
+import Exceptions.WriterException;
 import OutStream.OutStream;
 import Rules.CodeRules;
 import com.sun.xml.internal.ws.handler.HandlerException;
@@ -12,22 +14,26 @@ import com.sun.xml.internal.ws.handler.HandlerException;
  */
 public class LitterHandler implements Handler {
 
+    private WriterCommand writerCommand;
+
+    public LitterHandler(WriterCommand writerCommand){
+        this.writerCommand = writerCommand;
+    }
+
     public void handle (Context context, OutStream destination, CodeRules rules) throws HandlerException {
         try {
             if (context.getIsNewString() == true) {
-                writeIndent(destination, symbolForNewString, spaceCounter, context);
+                writerCommand.writeIndentsOnNewString(destination, rules, context);
             } else {
                 if (context.getPastIsOperand() == true) {
-                    destination.writeSymbol(' ');
+                    writerCommand.writeIndent(destination, rules);
                 }
             }
-            destination.writeSymbol(context.getSymbol());
+            writerCommand.writeSymbol(destination, context.getSymbol());
             context.setIsNewString(false);
-            context.setPastIsOperand( false );
-        } catch (FormatterException formatterException) {
-            throw new HandlerException(formatterException);
-        } catch (StreamException streamException) {
-            throw new HandlerException(streamException);
+            context.setPastIsOperand(false);
+        } catch (WriterException e) {
+            throw new HandlerException(e.Problem());
         }
     }
 }

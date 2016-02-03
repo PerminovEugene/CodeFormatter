@@ -6,11 +6,11 @@ import Exceptions.FormatterException;
 import Exceptions.StreamException;
 import Handlers.*;
 import InStream.InStream;
+import LogicAutomat.Machine;
 import OutStream.OutStream;
 import Rules.CodeRules;
 import Rules.JavaRules;
 import org.apache.log4j.Logger;
-import Context.Context;
 
 /**
  * Created by eugenep on 01.07.14.
@@ -67,48 +67,14 @@ class CodeFormatter {
         Context context = new Context();
         try {
             WriterCommand javaWriterCommand = new JavaWriterCommand();
-            Handler letterHandler = new LitterHandler(javaWriterCommand);
-            Handler openParenthesisHandler = new OpenParenthesisHandler(javaWriterCommand);
-            Handler closeParenthesisHandler = new CloseParenthesisHandler(javaWriterCommand);
-            Handler comaHandler = new ComaHandler(javaWriterCommand);
-            Handler operandHandler = new OperandHandler(javaWriterCommand);
-            Handler spaceHandler = new SpaceHandler(javaWriterCommand);
-            Handler dotAndComaHandler = new DotAndCommaHandler(javaWriterCommand);
 
-
+            Machine handlersIoCMachine = new Machine();
             CodeRules codeRules = new JavaRules();
 
             while (!source.isEnd()) {
                 context.setSymbol(source.readSymbol());
-                switch (context.getSymbol()) {
-                    case'{':
-                        openParenthesisHandler.handle(context, destination, codeRules);
-                        break;
-                    case'}':
-                        closeParenthesisHandler.handle(context, destination, codeRules);
-                        break;
-                    case';':
-                        dotAndComaHandler.handle(context, destination, codeRules);
-                        break;
-                    case ' ':
-                        spaceHandler.handle(context, destination, codeRules);
-                        break;
-                    case '\n':
-                        break;
-                    case ',':
-                        comaHandler.handle(context, destination, codeRules);
-                        break;
-                    case '*':
-                    case '/':
-                    case '-':
-                    case '+':
-                    case '=':
-                        operandHandler.handle(context, destination, codeRules);
-                        break;
-                    default:
-                        letterHandler.handle(context, destination, codeRules);
-                        break;
-                }
+                Handler handler = handlersIoCMachine.getHandlerInstanceSymbol(context);
+                handler.handle(context, destination, codeRules);
             }
         } catch (StreamException streamException) {
             throw new FormatterException(streamException);

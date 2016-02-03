@@ -1,0 +1,47 @@
+{
+    "InStreamInterfaceProvider"          : "com.nikita.refactoring.Guice.ReadFromFileProvider",
+    "OutStreamInterfaceProvider"         : "com.nikita.refactoring.Guice.WriteForFileProvider",
+
+    "JavaHandlers" : {
+
+        "{": {
+            "defaultPath": "Handlers.OpenParenthesisHandler"
+        },
+
+        "}": {
+            "defaultPath": "Handlers.CloseParenthesisHandler"
+        },
+
+        ";": {
+            "defaultPath": "Handlers.DotAndCommaHandler"
+        },
+
+        " ": {
+            "defaultPath": "Handlers.SpaceHandler"
+        },
+
+        ",": {
+            "defaultPath": "Handlers.ComaHandler"
+        },
+
+        "*": {
+            "defaultPath": "Handlers.OperandHandler"
+        },
+        "/": {
+            "defaultPath": "Handlers.OperandHandler"
+        },
+        "-": {
+            "defaultPath": "Handlers.OperandHandler"
+        },
+        "+": {
+            "defaultPath": "Handlers.OperandHandler"
+        },
+        "=": {
+            "defaultPath": "Handlers.OperandHandler"
+        },
+
+        "default": {
+            "defaultPath": "Handlers.LitterHandler"
+        }
+    }
+}

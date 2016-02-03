@@ -1,5 +1,6 @@
 package Handlers;
 
+import Commands.JavaWriterCommand;
 import Commands.WriterCommand;
 import Context.Context;
 import Exceptions.WriterException;
@@ -14,6 +15,10 @@ public class DotAndCommaHandler implements Handler {
 
     private WriterCommand writerCommand;
 
+    public DotAndCommaHandler() {
+        WriterCommand javaWriterCommand = new JavaWriterCommand();
+        this.writerCommand = javaWriterCommand;
+    }
     public DotAndCommaHandler(WriterCommand writerCommand){
         this.writerCommand = writerCommand;
     }

@@ -1,5 +1,6 @@
 package Handlers;
 
+import Commands.JavaWriterCommand;
 import Commands.WriterCommand;
 import Context.Context;
 import Exceptions.WriterException;
@@ -14,6 +15,10 @@ public class SpaceHandler implements Handler{
 
     private WriterCommand writerCommand;
 
+    public SpaceHandler() {
+        WriterCommand javaWriterCommand = new JavaWriterCommand();
+        this.writerCommand = javaWriterCommand;
+    }
     public SpaceHandler(WriterCommand writerCommand){
         this.writerCommand = writerCommand;
     }

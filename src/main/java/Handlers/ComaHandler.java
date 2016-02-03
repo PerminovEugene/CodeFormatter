@@ -1,5 +1,6 @@
 package Handlers;
 
+import Commands.JavaWriterCommand;
 import Commands.WriterCommand;
 import Context.Context;
 import Exceptions.WriterException;
@@ -14,15 +15,16 @@ public class ComaHandler implements Handler {
 
     private WriterCommand writerCommand;
 
+    public ComaHandler() {
+        WriterCommand javaWriterCommand = new JavaWriterCommand();
+        this.writerCommand = javaWriterCommand;
+    }
     public ComaHandler(WriterCommand writerCommand){
         this.writerCommand = writerCommand;
     }
 
     public void handle (Context context, OutStream outStream, CodeRules rules) throws HandlerException {
         try {
-//            if (context.getIsNewString()) {
-//                writerCommand.writeIndentsOnNewString(outStream, rules, context);
-//            }
             writerCommand.writeSymbol(outStream, context.getSymbol());
             if (context.getPastSymbol() != rules.getNearComaIndent()) {
                writerCommand.writeSymbol(outStream, rules.getNearComaIndent());

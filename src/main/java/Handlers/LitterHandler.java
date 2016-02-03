@@ -1,5 +1,6 @@
 package Handlers;
 
+import Commands.JavaWriterCommand;
 import Commands.WriterCommand;
 import Context.Context;
 import Exceptions.FormatterException;
@@ -16,6 +17,10 @@ public class LitterHandler implements Handler {
 
     private WriterCommand writerCommand;
 
+    public LitterHandler() {
+        WriterCommand javaWriterCommand = new JavaWriterCommand();
+        this.writerCommand = javaWriterCommand;
+    }
     public LitterHandler(WriterCommand writerCommand){
         this.writerCommand = writerCommand;
     }

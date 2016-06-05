@@ -13,10 +13,10 @@ public class Machine {
     private static final Logger logger = Logger.getLogger(JsonReader.class);
 
     public Handler getHandlerInstanceSymbol(Context context) {
-        String handlerPathInConfig = "JavaHandlers." + (char)context.getSymbol() + ".defaultPath";
+        String handlerPathInConfig = "JavaHandlers." + context.getState() + "State." + (char)context.getSymbol() + ".defaultPath";
         String handlerName = (String) JsonReader.getObjectOnPath(handlerPathInConfig);
         if (handlerName == null) { // then other symbols
-            handlerPathInConfig = "JavaHandlers." + "default" + ".defaultPath";
+            handlerPathInConfig = "JavaHandlers." + context.getState() + "State." + "default" + ".defaultPath";
             handlerName = (String) JsonReader.getObjectOnPath(handlerPathInConfig);
         }
 

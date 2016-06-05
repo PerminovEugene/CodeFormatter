@@ -1,45 +1,61 @@
 {
 
     "JavaHandlers" : {
+        "codeState": {
 
-        "{": {
-            "defaultPath": "Handlers.OpenParenthesisHandler"
-        },
+            "{": {
+                "defaultPath": "Handlers.OpenParenthesisHandler"
+            },
 
-        "}": {
-            "defaultPath": "Handlers.CloseParenthesisHandler"
-        },
+            "}": {
+                "defaultPath": "Handlers.CloseParenthesisHandler"
+            },
 
-        ";": {
-            "defaultPath": "Handlers.DotAndCommaHandler"
-        },
+            ";": {
+                "defaultPath": "Handlers.DotAndCommaHandler"
+            },
 
-        " ": {
-            "defaultPath": "Handlers.SpaceHandler"
-        },
+            " ": {
+                "defaultPath": "Handlers.SpaceHandler"
+            },
 
-        ",": {
-            "defaultPath": "Handlers.ComaHandler"
-        },
+            ",": {
+                "defaultPath": "Handlers.ComaHandler"
+            },
 
-        "*": {
-            "defaultPath": "Handlers.OperandHandler"
+            "*": {
+                "defaultPath": "Handlers.OperandHandler"
+            },
+            "/": {
+                "defaultPath": "Handlers.OperandHandler"
+            },
+            "-": {
+                "defaultPath": "Handlers.OperandHandler"
+            },
+            "+": {
+                "defaultPath": "Handlers.OperandHandler"
+            },
+            "=": {
+                "defaultPath": "Handlers.OperandHandler"
+            },
+            "default": {
+                "defaultPath": "Handlers.LitterHandler"
+            }
         },
-        "/": {
-            "defaultPath": "Handlers.OperandHandler"
+        "commentState": {
+            "default": {
+                "defaultPath": "Handlers.SingleCommentHandler",
+                "newState": "commentState"
+            },
+            "\n": {
+                "defaultPath": "Handlers.SingleCommentHandler",
+                "newState": "endCommentState"
+            }
         },
-        "-": {
-            "defaultPath": "Handlers.OperandHandler"
-        },
-        "+": {
-            "defaultPath": "Handlers.OperandHandler"
-        },
-        "=": {
-            "defaultPath": "Handlers.OperandHandler"
-        },
-
-        "default": {
-            "defaultPath": "Handlers.LitterHandler"
+        "endCommentState": {
+            "default": {
+                "defaultPath": "Handlers.EndSingleCommentHandler"
+            }
         }
     }
 }

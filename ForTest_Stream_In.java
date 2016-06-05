@@ -1,4 +1,4 @@
-package InStream;
+package InStream;//s
 {a  ,fa,  ad,f}
                                                          ((a+d)*c-l)==d+=e-(f*(fwe-1))++;
 {

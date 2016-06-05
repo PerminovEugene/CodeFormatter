@@ -1,6 +1,5 @@
 package InStream;
-
-
+ //s
 {
   a ,fa,  ad, f
 }
@@ -21,47 +20,43 @@ a +== b -+ c -* t / k = * ( = a = ) = * t();
 
 
 {
- ///
-}
-
+ ///}
  =- pp
 pp == dd
 f -= d
 l == f
 ppad ==-- f
 
-{
   {
     {
       {
-        
+        {
+          
 
+        }
       }
     }
   }
-}
-
+  
 r + e - e + f_adfa / 1 / 34 - 33
 
-{
-  fada /////** ]]]afda
-}
-
-fa
+  {
+    fada /////**]]]afda}
+    fa
 import Exceptions.StreamException;
-
+    
 
 
  /** 
  *  Created by eugenep on 02.07.14.
  */ 
 public class StringInStream implements InStream 
-{
-  
+    {
+      
  private String source;
-  
+      
  private int numberCurrentChar;
-  
+      
 
  /** 
  *  Create input stream
@@ -69,15 +64,15 @@ public class StringInStream implements InStream
  */ 
  public StringInStream(String string)
  
-  {
-    
+      {
+        
  source =  string;
-    
+        
  numberCurrentChar =  0;
-    
+        
  
-  }
-  
+      }
+      
 
  /** 
  *  Read one symbol from stream
@@ -86,26 +81,26 @@ public class StringInStream implements InStream
  */ 
  public int readSymbol() throws StreamException
  
-  {
-    
+      {
+        
  if (numberCurrentChar ==  source.length())
  
-    {
-      
+        {
+          
  throw new StreamException("cant read in out of range");
-      
+          
  
-    }
-    
+        }
+        
  int symbol =  source.charAt(numberCurrentChar);
-    
+        
  numberCurrentChar ++;
-    
+        
  return symbol;
-    
+        
  
-  }
-  
+      }
+      
 
  /** 
  *  For take info about end of string
@@ -113,26 +108,26 @@ public class StringInStream implements InStream
  */ 
  public boolean isEnd()
  
-  {
-    
+      {
+        
  return (numberCurrentChar ==  source.length());
-    
+        
  
-  }
-  
+      }
+      
 
  /** 
  * 
  */ 
  public void close()
  
-  {
-    
+      {
+        
  source =  null;
-    
+        
  
-  }
-  
+      }
+      
 
-}
-
+    }
+    

@@ -56,7 +56,27 @@ public class  Context {
         return this.symbol;
     }
     public void setSymbol(int newSymbol) {
+
         this.pastSymbol = this.symbol;
         this.symbol = newSymbol;
+        if (this.state.equals("code")) {
+            if ((this.getSymbol() == '/') && (this.getPastSymbol() == '/')) {
+                this.state =  "comment";
+            } else {
+                this.state =  "code";
+            }
+        } else if (this.state.equals("comment")) {
+            if (this.getSymbol() == '\n') {
+                this.state =  "endComment";
+            } else {
+                this.state =  "comment";
+            }
+        } else if (this.state.equals("endComment")) {
+            this.state =  "code";
+        }
+    }
+    private String state = new String("code");
+    public String getState() {
+        return this.state;
     }
 }

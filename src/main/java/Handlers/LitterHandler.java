@@ -3,8 +3,6 @@ package Handlers;
 import Commands.JavaWriterCommand;
 import Commands.WriterCommand;
 import Context.Context;
-import Exceptions.FormatterException;
-import Exceptions.StreamException;
 import Exceptions.WriterException;
 import OutStream.OutStream;
 import Rules.CodeRules;

@@ -3,7 +3,7 @@ package Context;
 /**
  * Created by eugenep on 18.10.15.
  */
-public class Context {
+public class  Context {
     private int levelOfNesting;
     private boolean isNewString;
     private boolean pastIsOperand;

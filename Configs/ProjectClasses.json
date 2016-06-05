@@ -1,6 +1,4 @@
 {
-    "InStreamInterfaceProvider"          : "com.nikita.refactoring.Guice.ReadFromFileProvider",
-    "OutStreamInterfaceProvider"         : "com.nikita.refactoring.Guice.WriteForFileProvider",
 
     "JavaHandlers" : {
 
